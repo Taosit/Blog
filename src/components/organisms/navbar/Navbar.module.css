@@ -1,0 +1,16 @@
+.links {
+  display: flex;
+  gap: 8px;
+}
+
+.container {
+  display: inline-flex;
+  gap: 12px;
+  align-items: center;
+  text-decoration: none;
+}
+
+.container p {
+  font-size: 1.2rem;
+  color: var(--text-medium);
+}

@@ -1,0 +1,38 @@
+export const blogs = [
+  {
+    id: "1",
+    title: "A Very Very Long Title",
+    tags: ["tag1", "tag two"],
+    author: { name: "Alexandra Elena", avatar: "", color: "#E3C3C3" },
+    date: "02/03/2023",
+    image: "",
+    color: "#E3C3C3",
+  },
+  {
+    id: "2",
+    title: "Another post",
+    tags: ["tag1"],
+    author: { name: "Author", avatar: "", color: "#A5E4BE" },
+    date: "02/05/2023",
+    image: "",
+    color: "#A5E4BE",
+  },
+  {
+    id: "3",
+    title: "Part 2 of 2",
+    tags: ["tag1", "tag two"],
+    author: { name: "Alexandra Elena", avatar: "", color: "#E3C3C3" },
+    date: "02/03/2023",
+    image: "",
+    color: "#E3C3C3",
+  },
+  {
+    id: "4",
+    title: "I'm graduating!",
+    tags: [],
+    author: { name: "Random UBC Student", avatar: "", color: "#82C2E5" },
+    date: "02/03/2023",
+    image: "",
+    color: "#82C2E5",
+  },
+];

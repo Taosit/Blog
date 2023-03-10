@@ -1,0 +1,32 @@
+:root {
+  --variant: #b99ce8;
+  --variant-light: #e6d5f3;
+  --variant-dark: #64409f;
+
+  --gray: #d4d4d4;
+  --gray-light: #f4f1f6;
+
+  --text-light: #767575;
+  --text-medium: #4f4f4f;
+  --text-dark: #313131;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color: var(--text-dark);
+  font-size: 100%;
+  font-weight: 400;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
+button {
+  background-color: white;
+  border: none;
+  cursor: pointer;
+}

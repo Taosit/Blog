@@ -1,0 +1,12 @@
+.button {
+  background-color: var(--variant-light);
+  color: var(--variant-dark);
+  font-size: 1rem;
+  border-radius: 4px;
+  padding: 4px 16px;
+}
+
+.large {
+  font-size: 1.5rem;
+  padding: 6px 20px;
+}
