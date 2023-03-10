@@ -15,6 +15,11 @@
   color: var(--text-light);
   flex-grow: 1;
   cursor: pointer;
+  min-width: 90px;
+}
+
+.chevron {
+  margin-left: 4px;
 }
 
 .menu {

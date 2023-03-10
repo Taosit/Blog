@@ -1,0 +1,23 @@
+.container {
+  width: 90%;
+  margin: 1rem auto;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between;
+}
+
+.sort {
+  margin-right: auto;
+}
+
+@media (min-width: 500px) {
+  .container {
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 685px) {
+  .container {
+    max-width: var(--max-width);
+  }
+}

@@ -58,8 +58,8 @@ export const Card = ({
               <Image
                 className={styles.avatar}
                 src={author.avatar}
-                height={50}
-                width={50}
+                height={64}
+                width={64}
                 alt="avatar"
               />
             )}

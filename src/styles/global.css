@@ -9,6 +9,9 @@
   --text-light: #767575;
   --text-medium: #4f4f4f;
   --text-dark: #313131;
+
+  --max-width: 1000px;
+  --margin-x: calc(50vw - var(--max-width) / 2);
 }
 
 * {
@@ -25,8 +28,20 @@ body {
   margin: 0;
 }
 
+main {
+  padding-bottom: 2rem;
+}
+
 button {
   background-color: white;
   border: none;
   cursor: pointer;
+}
+
+input {
+  padding: 4px 6px;
+}
+
+ul {
+  list-style: none;
 }

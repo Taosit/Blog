@@ -8,12 +8,15 @@ export type ButtonProps = {
 export const Button = ({
   size = "small",
   children,
+  className,
   ...props
 }: PropsWithChildren<ButtonProps>) => {
   return (
     <button
       {...props}
-      className={`${styles.button} ${size === "large" ? styles.large : ""}`}
+      className={`${styles.button} ${
+        size === "large" ? styles.large : ""
+      } ${className}`}
     >
       {children}
     </button>

@@ -14,6 +14,7 @@ type DropdownProps = {
 export const Dropdown = ({
   items: itemStrings,
   onSelectItem,
+  className,
   ...props
 }: DropdownProps) => {
   const initialItmes = itemStrings.map((item, i) => ({
@@ -43,13 +44,17 @@ export const Dropdown = ({
   };
 
   return (
-    <div className={styles.container} {...props}>
+    <div className={`${styles.container} ${className}`} {...props}>
       <button
         className={styles.clickable}
         onClick={() => setExpanded((prev) => !prev)}
       >
         <p>{selectedItem?.name}</p>
-        <Image src={expanded ? chevronUp : chevronDown} alt="chevron" />
+        <Image
+          className={styles.chevron}
+          src={expanded ? chevronUp : chevronDown}
+          alt="chevron"
+        />
       </button>
       {expanded && (
         <ul className={styles.menu}>

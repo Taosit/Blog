@@ -1,10 +1,18 @@
+import { BlogCards } from "@/components/organisms/blogCards/BlogCards";
+import { Filters } from "@/components/organisms/filters/Filters";
+import { TopBar } from "@/components/organisms/topBar/TopBar";
 import React from "react";
+import styles from "./Blogs.module.css";
 
 const Blogs = () => {
   return (
-    <div>
-      <h1>Blogs</h1>
-    </div>
+    <>
+      <TopBar />
+      <main>
+        <Filters />
+        <BlogCards />
+      </main>
+    </>
   );
 };
 
