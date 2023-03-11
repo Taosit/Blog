@@ -9,7 +9,7 @@ type InputGroupProps = {
   label: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   validate?: (str: string) => string;
 } & React.HTMLAttributes<HTMLDivElement>;
 

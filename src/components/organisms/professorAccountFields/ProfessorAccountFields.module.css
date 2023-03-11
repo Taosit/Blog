@@ -1,0 +1,11 @@
+.radio {
+  margin-top: 0.5rem;
+}
+
+.error {
+  margin-top: 0.125rem;
+  font-size: 0.9rem;
+  color: var(--error);
+  height: 18.5px;
+  min-width: 1px;
+}

@@ -1,0 +1,38 @@
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  margin-bottom: 2rem;
+}
+
+.formFields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.radio {
+  margin-top: 0.5rem;
+}
+
+.error {
+  margin-top: 0.125rem;
+  font-size: 0.9rem;
+  color: var(--error);
+  height: 18.5px;
+  min-width: 1px;
+}
+
+.finishButton {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  align-self: flex-end;
+}
+
+.finishButton p {
+  color: var(--variant-dark);
+  font-size: 1.25rem;
+}

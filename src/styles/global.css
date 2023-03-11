@@ -1,6 +1,7 @@
 :root {
   --variant: #b99ce8;
   --variant-light: #e6d5f3;
+  --variant-light-hover: #ebdff5;
   --variant-dark: #64409f;
 
   --gray: #d4d4d4;
@@ -43,6 +44,10 @@ button {
   background-color: transparent;
   border: none;
   cursor: pointer;
+}
+
+button:disabled {
+  cursor: auto;
 }
 
 input {

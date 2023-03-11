@@ -6,6 +6,11 @@
 .container button {
   padding: 4px 8px;
   border: 2px solid var(--variant-light);
+  transition: background-color 0.2s;
+}
+
+.container button:hover {
+  background-color: var(--variant-light-hover);
 }
 
 .container button:first-of-type {

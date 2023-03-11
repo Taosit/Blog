@@ -6,10 +6,17 @@ import styles from "./Radio.module.css";
 type RadioProps = {
   items: [string, string];
   onSelectItem: (item: string) => void;
+  hasDefault?: boolean;
 } & React.HTMLAttributes<HTMLDivElement>;
 
-export const Radio = ({ items, onSelectItem, ...props }: RadioProps) => {
-  const [selectedItem, setSelectedItem] = useState(0);
+export const Radio = ({
+  items,
+  onSelectItem,
+  hasDefault = false,
+  className,
+  ...props
+}: RadioProps) => {
+  const [selectedItem, setSelectedItem] = useState(hasDefault ? 0 : null);
 
   const selectItem = (i: number) => {
     if (i === selectedItem) return;
@@ -18,14 +25,16 @@ export const Radio = ({ items, onSelectItem, ...props }: RadioProps) => {
   };
 
   return (
-    <div className={styles.container} {...props}>
+    <div className={`${styles.container} ${className}`} {...props}>
       <button
+        type="button"
         className={selectedItem === 0 ? styles.active : ""}
         onClick={() => selectItem(0)}
       >
         {items[0]}
       </button>
       <button
+        type="button"
         className={selectedItem === 1 ? styles.active : ""}
         onClick={() => selectItem(1)}
       >

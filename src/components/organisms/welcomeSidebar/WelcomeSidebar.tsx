@@ -8,7 +8,7 @@ export const WelcomeSidebar = () => {
   return (
     <aside className={styles.container}>
       <div className={styles.contentContainer}>
-        <h2>Welcome to {websiteName}! </h2>
+        <h2>Welcome to {websiteName} </h2>
         <p>
           {websiteName} is a platform for UBC students to share articles and get
           comments & reviews from their classmates and professors

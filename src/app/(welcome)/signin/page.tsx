@@ -33,7 +33,6 @@ const Signin = () => {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Sign In</h1>
-
       <InputGroup
         label="Please enter your email"
         type="email"
