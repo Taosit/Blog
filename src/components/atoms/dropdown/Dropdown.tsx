@@ -39,8 +39,11 @@ export const Dropdown = ({
         selected: item.name === selectedItem.innerText,
       }))
     );
-    setExpanded(false);
     onSelectItem(selectedItem.innerText);
+  };
+
+  const handleBlur = () => {
+    setTimeout(() => setExpanded(false), 0);
   };
 
   return (
@@ -48,6 +51,7 @@ export const Dropdown = ({
       <button
         className={styles.clickable}
         onClick={() => setExpanded((prev) => !prev)}
+        onBlur={handleBlur}
       >
         <p>{selectedItem?.name}</p>
         <Image

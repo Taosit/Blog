@@ -4,6 +4,19 @@
   font-size: 1rem;
   border-radius: 4px;
   padding: 4px 16px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  align-items: center;
+}
+
+.button:disabled {
+  opacity: 0.9;
+  cursor: auto;
+}
+
+.button p {
+  color: var(--variant-dark);
 }
 
 .large {

@@ -1,0 +1,44 @@
+.title {
+  margin-bottom: 2rem;
+}
+
+.emailButton {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.googleButton {
+  width: 100%;
+}
+
+.separatorContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  margin: 1rem 0;
+}
+
+.separatorContainer p {
+  color: var(--text-light);
+}
+
+.separatorContainer p::before {
+  content: "";
+  position: absolute;
+  background-color: var(--gray-light);
+  left: 0;
+  top: calc(50% - 1px);
+  width: 45%;
+  height: 1px;
+}
+
+.separatorContainer p::after {
+  content: "";
+  position: absolute;
+  background-color: var(--gray-light);
+  right: 0;
+  top: calc(50% - 1px);
+  width: 45%;
+  height: 1px;
+}

@@ -12,10 +12,13 @@
   background-color: white;
   padding: 4px;
   font-size: 1rem;
-  color: var(--text-light);
   flex-grow: 1;
   cursor: pointer;
   min-width: 90px;
+}
+
+.clickable p {
+  color: var(--text-light);
 }
 
 .chevron {
@@ -44,4 +47,15 @@
 
 .menuItem:hover {
   background-color: var(--gray-light);
+}
+
+@media (min-width: 685px) {
+  .clickable {
+    padding: 4px 8px;
+    font-size: 1.2rem;
+  }
+  .menuItem {
+    padding: 2px 8px;
+    font-size: 1.2rem;
+  }
 }

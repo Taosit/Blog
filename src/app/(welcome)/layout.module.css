@@ -1,0 +1,28 @@
+.container {
+}
+
+.contentContainer main {
+  width: 90%;
+  margin: 2rem auto 0;
+}
+
+@media (min-width: 700px) {
+  .container {
+    display: flex;
+  }
+  .container aside {
+    order: 2;
+    flex-basis: 300px;
+    flex-grow: 2;
+  }
+  .contentContainer {
+    flex-basis: 300px;
+    flex-grow: 3;
+    margin-left: var(--margin-x);
+    margin-left: max(var(--margin-x), 10%);
+  }
+  .contentContainer main {
+    max-width: 400px;
+    margin: 5rem 0 0;
+  }
+}

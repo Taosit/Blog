@@ -1,0 +1,59 @@
+.container {
+  background: url("UBC.jpg");
+  background-position: center;
+  background-size: cover;
+  background-blend-mode: multiply;
+  z-index: 1;
+  isolation: isolate;
+  position: relative;
+  overflow: hidden;
+}
+
+.container::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: white;
+  opacity: 0.8;
+  z-index: -1;
+}
+
+.contentContainer {
+  margin: 2rem 5vw;
+  height: 100%;
+}
+
+.contentContainer h2 {
+  font-size: 1.5rem;
+}
+
+.contentContainer p {
+  margin-top: 2rem;
+}
+
+.contentContainer h3 {
+  font-size: 1.25rem;
+  margin-top: 1rem;
+}
+
+.contentContainer ul {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.contentContainer li {
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+@media (min-width: 700px) {
+  .container {
+    min-height: 100vh;
+    min-height: 100svh;
+  }
+  .contentContainer {
+    margin: 5rem max(var(--margin-x), 10%) auto 3rem;
+  }
+}

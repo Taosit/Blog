@@ -6,12 +6,14 @@
   --gray: #d4d4d4;
   --gray-light: #f4f1f6;
 
-  --text-light: #767575;
+  --text-light: #6b6a6a;
   --text-medium: #4f4f4f;
   --text-dark: #313131;
 
+  --error: #963434;
+
   --max-width: 1000px;
-  --margin-x: calc(50vw - var(--max-width) / 2);
+  --margin-x: calc(50vw - (var(--max-width) / 2));
 }
 
 * {
@@ -32,8 +34,13 @@ main {
   padding-bottom: 2rem;
 }
 
+h1 {
+  font-size: 2rem;
+  color: var(--text-medium);
+}
+
 button {
-  background-color: white;
+  background-color: transparent;
   border: none;
   cursor: pointer;
 }
