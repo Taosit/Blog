@@ -3,7 +3,7 @@
 import { Button } from "@/components/atoms/button/Button";
 import { InputGroup } from "@/components/atoms/inputGroup/InputGroup";
 import { signIn } from "next-auth/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from "./Signin.module.css";
 import google from "./google.svg";
@@ -14,6 +14,13 @@ const Signin = () => {
   const [email, setEmail] = useState("");
 
   const searchParams = useSearchParams();
+
+  const messageRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!searchParams?.get("verifyEmail") || !messageRef.current) return;
+    messageRef.current.style.display = "block";
+  }, [searchParams, messageRef]);
 
   const signinOptions = {
     redirect: true,
@@ -58,6 +65,11 @@ const Signin = () => {
         <Image src={google} width={20} height={20} alt="google" />
         <p>Sign in with Google</p>
       </Button>
+      <div ref={messageRef} className={styles.messageContainer}>
+        <p className={styles.verificationMessage}>
+          An email has been sent. Please check your inbox to sign in.
+        </p>
+      </div>
     </div>
   );
 };

@@ -1,3 +1,5 @@
+import { accountFields } from "@/types/types";
+
 export const darkenColor = (color: string) => {
   const num = parseInt(color.substring(1), 16);
   const r = (num >> 16) - 50;
@@ -58,4 +60,18 @@ export const getCourseError = (str: string) => {
   } else {
     return "";
   }
+};
+
+export const isFormInvalid = (form: accountFields) => {
+  const { isStudent, isProfessor, studentNumber, firstName, lastName, course } =
+    form;
+
+  return (
+    isStudent === "" ||
+    (isStudent === "No" && isProfessor === "") ||
+    (isStudent === "Yes" && getStudentNumberError(studentNumber)) ||
+    getNameError(firstName, "first") ||
+    getNameError(lastName, "last") ||
+    getCourseError(course)
+  );
 };

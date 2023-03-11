@@ -23,8 +23,15 @@ export const authOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
+  callbacks: {
+    async session({ session, user }) {
+      return { ...session, user };
+    },
+  },
   pages: {
     signIn: "/signin",
+    verifyRequest: "/signin?verifyEmail=true",
+    newUser: "/account",
   },
 };
 export default NextAuth(authOptions);

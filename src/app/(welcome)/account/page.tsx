@@ -1,18 +1,15 @@
 "use client";
 import { Radio } from "@/components/atoms/radio/Radio";
-import {
-  getCourseError,
-  getNameError,
-  getStudentNumberError,
-} from "@/lib/helpers";
+import { isFormInvalid } from "@/lib/helpers";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import styles from "./Account.module.css";
 import chevronRight from "./chevron-right.svg";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { accountFields } from "@/types/types";
 import { StudentAccountFields } from "@/components/organisms/studentAccountFields/StudentAccountFields";
 import { ProfessorAccountFields } from "@/components/organisms/professorAccountFields/ProfessorAccountFields";
+import { useSession } from "next-auth/react";
 
 const Account = () => {
   const initialData = {
@@ -28,27 +25,37 @@ const Account = () => {
   const [studentSelectError, setStudentSelectError] = useState("");
   const [professorSelectError, setProfessorSelectError] = useState("");
 
-  const formRef = useRef(null);
+  const session = useSession();
+  console.log({ session });
+
+  const formRef = useRef<HTMLFormElement>(null);
 
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (!formRef.current) return;
     formRef.current.scrollIntoView();
   }, [formRef]);
 
+  useEffect(() => {
+    if (session.status === "loading") {
+      console.log("loading");
+      return;
+    }
+    if (!session.data?.user) {
+      router.push("/signin");
+      return;
+    }
+    if (!session.data.user.name) return;
+    const [firstName, lastName] = session.data.user.name.split(" ");
+    setData((prev) => ({ ...prev, firstName, lastName }));
+  }, [session.data]);
+
   const selectIsStudent = (choice: string) => {
     setStudentSelectError("");
     setData((prev) => ({ ...prev, isStudent: choice }));
   };
-
-  const isInvalid =
-    data.isStudent === "" ||
-    (data.isStudent === "No" && data.isProfessor === "") ||
-    (data.isStudent === "Yes" && getStudentNumberError(data.studentNumber)) ||
-    getNameError(data.firstName, "first") ||
-    getNameError(data.lastName, "last") ||
-    getCourseError(data.course);
 
   const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -60,8 +67,10 @@ const Account = () => {
       setProfessorSelectError("This field must be selected");
       return;
     }
-    if (isInvalid) return;
-    router.push("./profile");
+    if (isFormInvalid(data)) return;
+    const callbackUrl = searchParams?.get("callbackUrl") || "/profile";
+    console.log({ callbackUrl });
+    router.push(callbackUrl);
   };
 
   return (

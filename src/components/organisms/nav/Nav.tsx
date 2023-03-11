@@ -10,7 +10,6 @@ import styles from "./Nav.module.css";
 
 export const Nav = () => {
   const session = useSession();
-  console.log({ session });
 
   return (
     <div className={styles.nav}>
