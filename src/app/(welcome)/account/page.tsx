@@ -6,10 +6,11 @@ import Image from "next/image";
 import styles from "./Account.module.css";
 import chevronRight from "./chevron-right.svg";
 import { useRouter, useSearchParams } from "next/navigation";
-import { accountFields } from "@/types/types";
+import { accountFields, userFields } from "@/types/types";
 import { StudentAccountFields } from "@/components/organisms/studentAccountFields/StudentAccountFields";
 import { ProfessorAccountFields } from "@/components/organisms/professorAccountFields/ProfessorAccountFields";
 import { useSession } from "next-auth/react";
+import { updateUser } from "@/lib/api";
 
 const Account = () => {
   const initialData = {
@@ -60,6 +61,7 @@ const Account = () => {
 
   const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!session.data?.user) return;
     if (data.isStudent === "") {
       setStudentSelectError("This field must be selected");
       return;
@@ -69,9 +71,15 @@ const Account = () => {
       return;
     }
     if (isFormInvalid(data)) return;
-    const callbackUrl = searchParams?.get("callbackUrl") || "/profile";
-    console.log({ callbackUrl });
-    router.push(callbackUrl);
+    const user = session.data.user as userFields;
+    updateUser({ id: user.id, data })
+      .then((data) => {
+        console.log(data);
+        const callbackUrl = searchParams?.get("callbackUrl") || "/profile";
+        console.log({ callbackUrl });
+        router.push(callbackUrl);
+      })
+      .catch((e) => console.log(e));
   };
 
   return (

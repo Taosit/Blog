@@ -75,3 +75,16 @@ export const isFormInvalid = (form: accountFields) => {
     getCourseError(course)
   );
 };
+
+export const getTerm = () => {
+  const today = new Date();
+  const term = today.getMonth() < 4 ? "W2" : today.getMonth() < 8 ? "W1" : "S";
+  const year = term === "W2" ? today.getFullYear() - 1 : today.getFullYear();
+  return `${year}${term}`;
+};
+
+export const formatClass = (name: string) => {
+  const trimedName = name.trim().toLowerCase();
+  if (!trimedName.includes(" ")) return trimedName;
+  return trimedName.split(" ").join("");
+};

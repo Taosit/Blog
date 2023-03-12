@@ -21,7 +21,7 @@
 .author {
   font-size: 1.125rem;
   position: relative;
-  --left: calc(0.75rem + 64px + 8px);
+  --left: calc(0.75rem + 72px + 8px);
   left: var(--left);
   width: calc(100% - var(--left) - 0.75rem);
   top: 1rem;
@@ -59,7 +59,7 @@
 }
 
 .cardBottom {
-  height: 4rem;
+  height: 5rem;
   border-bottom-right-radius: 8px;
   border-bottom-left-radius: 8px;
   position: relative;

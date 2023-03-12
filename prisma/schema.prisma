@@ -51,6 +51,7 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  color         String?
   role          Role      @default(STUDENT)
   studentNumber String?
   class         Class?    @relation(fields: [classId], references: [id])
@@ -69,9 +70,11 @@ enum Role {
 model Class {
   id   String @id @default(cuid())
   name String
-  year Int
+  term String
   user User[]
   Post Post[]
+
+  @@unique([name, term], name: "courseIdentifier")
 }
 
 model Post {

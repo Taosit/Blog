@@ -40,10 +40,11 @@ export const Dropdown = ({
       }))
     );
     onSelectItem(selectedItem.innerText);
+    setExpanded(false);
   };
 
   const handleBlur = () => {
-    setTimeout(() => setExpanded(false), 0);
+    setTimeout(() => setExpanded(false), 150);
   };
 
   return (

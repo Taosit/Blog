@@ -6,8 +6,20 @@
   justify-content: space-between;
 }
 
-.sort {
+.sortDropdown {
   margin-right: auto;
+}
+
+@media (min-width: 335px) {
+  .sortDropdown {
+    width: 90px;
+  }
+  .coursesDropdown {
+    width: 110px;
+  }
+  .termsDropdown {
+    width: 93.5px;
+  }
 }
 
 @media (min-width: 500px) {
@@ -19,5 +31,14 @@
 @media (min-width: 685px) {
   .container {
     max-width: var(--max-width);
+  }
+  .sortDropdown {
+    width: 102px;
+  }
+  .coursesDropdown {
+    width: 134.5px;
+  }
+  .termsDropdown {
+    width: 115px;
   }
 }

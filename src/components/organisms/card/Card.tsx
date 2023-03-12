@@ -26,6 +26,7 @@ export const Card = ({
   color,
   ...props
 }: CardProps) => {
+  const avatarDiameter = 72;
   return (
     <article className={styles.card} {...props}>
       <div className={styles.cardTop}>
@@ -51,15 +52,15 @@ export const Card = ({
               <DefaultAvatar
                 className={styles.avatar}
                 color={darkenColor(author.color)}
-                height={64}
-                width={64}
+                height={avatarDiameter}
+                width={avatarDiameter}
               />
             ) : (
               <Image
                 className={styles.avatar}
                 src={author.avatar}
-                height={64}
-                width={64}
+                height={avatarDiameter}
+                width={avatarDiameter}
                 alt="avatar"
               />
             )}

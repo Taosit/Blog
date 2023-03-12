@@ -1,17 +1,21 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import styles from "./Search.module.css";
 
 export const Search = () => {
-  const { push } = useRouter();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   const [searchValue, setSearchValue] = useState("");
 
   const search = () => {
     if (!searchValue) return;
-    push(`/blogs?search=${searchValue}`);
+    const params = new URLSearchParams(searchParams as URLSearchParams);
+    params.set("search", searchValue);
+    router.replace(`${pathname}?${params}`);
   };
 
   return (
