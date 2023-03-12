@@ -50,7 +50,8 @@ const Account = () => {
     if (!session.data.user.name) return;
     const [firstName, lastName] = session.data.user.name.split(" ");
     setData((prev) => ({ ...prev, firstName, lastName }));
-  }, [session.data]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session]);
 
   const selectIsStudent = (choice: string) => {
     setStudentSelectError("");

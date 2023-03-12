@@ -19,13 +19,16 @@ export const authOptions = {
       from: process.env.EMAIL_FROM,
     }),
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     }),
   ],
   callbacks: {
-    async session({ session, user }) {
-      return { ...session, user };
+    async session(params: any) {
+      if (params.session && params.user) {
+        return { ...params.session, user: params.user };
+      }
+      return params.session;
     },
   },
   pages: {
