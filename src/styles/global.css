@@ -1,6 +1,7 @@
 :root {
   --variant: #b99ce8;
   --variant-light: #e6d5f3;
+  --variant-lighter: #f4f1f6;
   --variant-light-hover: #ebdff5;
   --variant-dark: #64409f;
 
@@ -15,6 +16,8 @@
 
   --max-width: 1000px;
   --margin-x: calc(50vw - (var(--max-width) / 2));
+
+  --topbar-height: 6rem;
 }
 
 * {
@@ -50,10 +53,42 @@ button:disabled {
   cursor: auto;
 }
 
-input {
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="password"] {
   padding: 4px 6px;
 }
 
 ul {
   list-style: none;
+}
+
+@media (min-width: 500px) {
+  :root {
+    --topbar-height: 25vmin;
+  }
+}
+
+.rti--container {
+  --rti-s: 0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+  border-bottom: 1px solid var(--variant-light) !important;
+  gap: 0.5rem !important;
+}
+
+.rti--container:has(> input:disabled) {
+  background-color: rgba(239, 239, 239, 0.3);
+}
+
+.rti--container > input:disabled {
+  display: none;
+}
+
+.react-colorful {
+  position: absolute !important;
+  z-index: 1 !important;
+  top: 0 !important;
+  left: 3rem !important;
 }

@@ -1,0 +1,22 @@
+.container {
+  position: relative;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button {
+  width: calc(100% - 4px);
+  height: calc(100% - 4px);
+  border-radius: 0.4rem;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+@media (min-width: 500px) {
+  .button {
+    min-width: 2.5rem;
+    height: 2.5rem;
+  }
+}

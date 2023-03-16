@@ -1,15 +1,15 @@
-import { accountFields } from "@/types/types";
+import { HslColorType, userUpdateFields } from "@/types/types";
 
 export type fetcherProps = {
   url: string;
-  method: "ger" | "post" | "put" | "delete";
-  body: { [key: string]: any };
+  method?: "get" | "post" | "put" | "delete";
+  body?: { [key: string]: any };
   json?: boolean;
 };
 
 export const fetcher = async ({
   url,
-  method,
+  method = "get",
   body,
   json = true,
 }: fetcherProps) => {
@@ -33,10 +33,25 @@ export const fetcher = async ({
   }
 };
 
-export const updateUser = (user: { id: string; data: accountFields }) => {
+export const updateUser = (user: { id: string; data: userUpdateFields }) => {
   return fetcher({
     url: `/api/users/${user.id}`,
     method: "put",
     body: user.data,
   });
+};
+
+export const updateUserColor = (data: {
+  color: HslColorType;
+  userId: string;
+}) => {
+  return fetcher({
+    url: `/api/color`,
+    method: "put",
+    body: data,
+  });
+};
+
+export const getUser = (id: string) => {
+  return fetcher({ url: `/api/users/${id}` });
 };

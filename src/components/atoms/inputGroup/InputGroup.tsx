@@ -8,6 +8,7 @@ type InputGroupProps = {
   type?: string;
   label: string;
   value: string;
+  disabled?: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   validate?: (str: string) => string;
@@ -19,6 +20,7 @@ export const InputGroup = ({
   label,
   value,
   onChange,
+  disabled = false,
   onKeyDown = (e) => {},
   validate = (str: string) => "",
   className,
@@ -40,6 +42,7 @@ export const InputGroup = ({
       <input
         type={type}
         value={value}
+        disabled={disabled}
         onChange={handleChange}
         onKeyDown={onKeyDown}
         onBlur={handleBlur}

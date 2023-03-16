@@ -15,6 +15,7 @@ type CardProps = {
   date: string;
   image: string;
   color: string;
+  showAuthor: boolean;
 } & React.HTMLAttributes<HTMLDivElement>;
 
 export const Card = ({
@@ -24,6 +25,7 @@ export const Card = ({
   date,
   image,
   color,
+  showAuthor = true,
   ...props
 }: CardProps) => {
   const avatarDiameter = 72;
@@ -46,7 +48,7 @@ export const Card = ({
             : { backgroundColor: color }
         }
       >
-        {author && (
+        {showAuthor && author && (
           <div>
             {author.avatar === "" ? (
               <DefaultAvatar

@@ -1,4 +1,4 @@
-import { accountFields } from "@/types/types";
+import { accountFields, HslColorType, userUpdateFields } from "@/types/types";
 
 export const darkenColor = (color: string) => {
   const num = parseInt(color.substring(1), 16);
@@ -76,6 +76,17 @@ export const isFormInvalid = (form: accountFields) => {
   );
 };
 
+export const isUserUpdateSubmissionValid = (data: userUpdateFields) => {
+  const { role, studentNumber, firstName, lastName, courses } = data;
+  return (
+    (role === "STUDENT" &&
+      (!studentNumber || getStudentNumberError(studentNumber))) ||
+    getNameError(firstName, "first") ||
+    getNameError(lastName, "last") ||
+    courses.some((course) => getCourseError(course))
+  );
+};
+
 export const getTerm = () => {
   const today = new Date();
   const term = today.getMonth() < 4 ? "W2" : today.getMonth() < 8 ? "W1" : "S";
@@ -87,4 +98,9 @@ export const formatClass = (name: string) => {
   const trimedName = name.trim().toLowerCase();
   if (!trimedName.includes(" ")) return trimedName;
   return trimedName.split(" ").join("");
+};
+
+export const toColorString = (color: HslColorType) => {
+  const { h, s, l } = color;
+  return `hsl(${h} ${s}% ${l}%)`;
 };

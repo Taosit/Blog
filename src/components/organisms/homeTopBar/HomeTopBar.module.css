@@ -1,0 +1,26 @@
+.container {
+  background: url("polson.jpeg");
+  background-position: center;
+  background-size: cover;
+  background-blend-mode: multiply;
+  height: 30vh;
+  position: sticky;
+  top: calc(-30vh + 58px);
+  z-index: 1;
+  isolation: isolate;
+}
+
+.container::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(#bca0ed, #e1d6f4);
+  opacity: 0.7;
+  z-index: -1;
+}
+
+@media (min-width: 500px) {
+  .container {
+    top: calc(-30vh + 70px);
+  }
+}

@@ -1,26 +1,94 @@
-.container {
-  background: url("polson.jpeg");
-  background-position: center;
-  background-size: cover;
-  background-blend-mode: multiply;
-  height: 30vh;
-  position: sticky;
-  top: calc(-30vh + 58px);
-  z-index: 1;
-  isolation: isolate;
+.topBar {
+  height: calc(var(--topbar-height) * 3 / 2);
 }
 
-.container::after {
-  content: "";
+.container {
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 90%;
+  margin: 0 auto;
+  position: relative;
+}
+
+.container a {
   position: absolute;
-  inset: 0;
-  background-image: linear-gradient(#bca0ed, #e1d6f4);
-  opacity: 0.7;
-  z-index: -1;
+  top: 1rem;
+  left: 0;
+  text-decoration: none;
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.container a p {
+  color: var(--text-light);
+}
+
+.themeContainer {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.themeContainer label {
+  color: var(--text-light);
+}
+
+.colorPicker {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 36px;
+  height: 36px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+.colorPicker::-webkit-color-swatch {
+  border-radius: 50%;
+  border: none;
+}
+.colorPicker::-moz-color-swatch {
+  border-radius: 50%;
+  border: none;
+}
+
+.userContainer {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+
+.username {
+  font-size: 1.5rem;
 }
 
 @media (min-width: 500px) {
+  .themeContainer {
+    gap: 1rem;
+  }
+  .userContainer {
+    gap: 1.5rem;
+  }
+  .avatar {
+    width: 120px;
+    height: 120px;
+  }
+  .username {
+    font-size: 2rem;
+  }
+}
+
+@media (min-width: 685px) {
   .container {
-    top: calc(-30vh + 70px);
+    max-width: var(--max-width);
   }
 }

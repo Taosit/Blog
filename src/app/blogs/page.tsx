@@ -1,7 +1,9 @@
 import { BlogCards } from "@/components/organisms/blogCards/BlogCards";
 import { Filters } from "@/components/organisms/filters/Filters";
-import { TopBar } from "@/components/organisms/topBar/TopBar";
-import React from "react";
+import { HomeTopBar } from "@/components/organisms/homeTopBar/HomeTopBar";
+import React, { Suspense } from "react";
+import { blogs } from "@/seeds/blogs";
+import { blogType } from "@/types/types";
 
 type searchParamsProps = {
   searchParams: {
@@ -13,12 +15,17 @@ type searchParamsProps = {
 
 const Blogs = ({ searchParams }: searchParamsProps) => {
   console.log(searchParams);
+  const getBlog = (): Promise<blogType[]> => new Promise((res) => res(blogs));
+
   return (
     <>
-      <TopBar />
+      <HomeTopBar />
       <main>
         <Filters />
-        <BlogCards />
+        <Suspense fallback={<div>Loading...</div>}>
+          {/* @ts-expect-error Server Component */}
+          <BlogCards promise={getBlog()} />
+        </Suspense>
       </main>
     </>
   );

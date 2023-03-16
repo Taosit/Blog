@@ -12,6 +12,8 @@ import { ProfessorAccountFields } from "@/components/organisms/professorAccountF
 import { useSession } from "next-auth/react";
 import { updateUser } from "@/lib/api";
 
+type Role = "STUDENT" | "TEACHER";
+
 const Account = () => {
   const initialData = {
     isStudent: "",
@@ -27,7 +29,6 @@ const Account = () => {
   const [professorSelectError, setProfessorSelectError] = useState("");
 
   const session = useSession();
-  console.log({ session });
 
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -72,9 +73,16 @@ const Account = () => {
     }
     if (isFormInvalid(data)) return;
     const user = session.data.user as userFields;
-    updateUser({ id: user.id, data })
+    const formatedData = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      role: (data.isStudent ? "STUDENT" : "TEACHER") as Role,
+      studentNumber: data.studentNumber,
+      courses: [data.course],
+      color: { h: Math.floor(Math.random() * 360), s: 100, l: 80 },
+    };
+    updateUser({ id: user.id, data: formatedData })
       .then((data) => {
-        console.log(data);
         const callbackUrl = searchParams?.get("callbackUrl") || "/profile";
         console.log({ callbackUrl });
         router.push(callbackUrl);

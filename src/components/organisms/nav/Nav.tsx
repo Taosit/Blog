@@ -15,13 +15,13 @@ export const Nav = () => {
   return (
     <div className={styles.nav}>
       {user ? (
-        <Link href="/profile" className={styles.container}>
+        <Link href={`user/${user.id}`} className={styles.container}>
           {user?.image ? (
             <Image
               src={user.image}
               className={styles.avatar}
-              height={60}
-              width={60}
+              height={40}
+              width={40}
               alt="avatar"
             />
           ) : (
