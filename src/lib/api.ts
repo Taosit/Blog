@@ -52,6 +52,14 @@ export const updateUserColor = (data: {
   });
 };
 
+export const updateUserImage = (data: { image: string; userId: string }) => {
+  return fetcher({
+    url: `/api/avatar`,
+    method: "put",
+    body: data,
+  });
+};
+
 export const getUser = (id: string) => {
   return fetcher({ url: `/api/users/${id}` });
 };
