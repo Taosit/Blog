@@ -104,3 +104,30 @@ export const toColorString = (color: HslColorType) => {
   const { h, s, l } = color;
   return `hsl(${h} ${s}% ${l}%)`;
 };
+
+export async function cropImageSquare(
+  imageUrl: string,
+  size: number = 300
+): Promise<string> {
+  const img = new Image();
+  img.src = imageUrl;
+  await new Promise((resolve) => {
+    img.onload = () => {
+      resolve(null);
+    };
+  });
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  const scale = Math.max(size / img.width, size / img.height);
+  canvas.width = img.width * scale;
+  canvas.height = img.height * scale;
+  ctx!.drawImage(img, 0, 0, canvas.width, canvas.height);
+  const croppedCanvas = document.createElement("canvas");
+  const croppedCtx = croppedCanvas.getContext("2d");
+  croppedCanvas.width = size;
+  croppedCanvas.height = size;
+  const x = (canvas.width - size) / 2;
+  const y = (canvas.height - size) / 2;
+  croppedCtx!.drawImage(canvas, x, y, size, size, 0, 0, size, size);
+  return croppedCanvas.toDataURL();
+}

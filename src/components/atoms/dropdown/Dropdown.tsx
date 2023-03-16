@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import Image from "next/image";
 import styles from "./Dropdown.module.css";
 import chevronDown from "./chevron-down.svg";
 import chevronUp from "./chevron-up.svg";
+import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 
 type DropdownProps = {
   items: string[];
@@ -43,16 +44,24 @@ export const Dropdown = ({
     setExpanded(false);
   };
 
-  const handleBlur = () => {
-    setTimeout(() => setExpanded(false), 150);
-  };
+  const dropdownMenu = useRef<HTMLUListElement>(null);
+
+  const close = useCallback(() => {
+    setExpanded(false);
+  }, []);
+
+  useOnClickOutside(dropdownMenu, close);
+
+  // const handleBlur = () => {
+  //   setTimeout(() => setExpanded(false), 150);
+  // };
 
   return (
     <div className={`${styles.container} ${className}`} {...props}>
       <button
         className={styles.clickable}
         onClick={() => setExpanded((prev) => !prev)}
-        onBlur={handleBlur}
+        // onBlur={handleBlur}
       >
         <p>{selectedItem?.name}</p>
         <Image
@@ -62,7 +71,7 @@ export const Dropdown = ({
         />
       </button>
       {expanded && (
-        <ul className={styles.menu}>
+        <ul ref={dropdownMenu} className={styles.menu}>
           {otherItems.map((item) => (
             <li
               tabIndex={0}

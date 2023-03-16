@@ -8,9 +8,9 @@ import Link from "next/link";
 import doubleLeft from "./double-left.svg";
 import { Class, Color, Post, User } from "@prisma/client";
 import { HslColorType } from "@/types/types";
-import { toColorString } from "@/lib/helpers";
+import { cropImageSquare, toColorString } from "@/lib/helpers";
 import ColorPicker from "@/components/atoms/colorPicker/ColorPicker";
-import { updateUser, updateUserColor, updateUserImage } from "@/lib/api";
+import { updateUserColor, updateUserImage } from "@/lib/api";
 import { useRouter } from "next/navigation";
 
 type TopBarProps = {
@@ -47,12 +47,15 @@ export default function TopBar({ user }: TopBarProps) {
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       if (!e.target.files?.[0]) return;
       const imageFile = e.target.files[0];
+      if (imageFile.type.split("/")[0] !== "image") return;
       const reader = new FileReader();
       reader.readAsDataURL(imageFile);
       reader.onloadend = async () => {
-        if (!reader.result) return;
+        const image = reader.result as string;
+        if (!image) return;
+        const croppedImage = await cropImageSquare(image);
         updateUserImage({
-          image: reader.result as string,
+          image: croppedImage,
           userId: user.id,
         }).then(() => router.refresh());
         overlayRef.current?.blur();
