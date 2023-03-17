@@ -1,14 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./UserCard.module.css";
 import { User, Class, Post } from "@prisma/client";
 import { InputGroup } from "@/components/atoms/inputGroup/InputGroup";
-import { getNameError } from "@/lib/helpers";
+import { getNameError, getCourseError, formatClass } from "@/lib/helpers";
 import { EditIcon } from "./EditIcon";
 import CheckmarkIcon from "./CheckmarkIcon";
 import { TagsInput } from "react-tag-input-component";
 import { updateUser } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 type UserCardProps = {
   user: User & {
@@ -18,6 +19,14 @@ type UserCardProps = {
 };
 
 export default function UserCard({ user }: UserCardProps) {
+  const router = useRouter();
+  useEffect(() => {
+    if (user.role === "STUDENT" && !user.studentNumber) {
+      router.push("/account");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user.role]);
+
   const [data, setData] = useState({
     firstName: user.name?.split(" ")[0] || "",
     lastName: user.name?.split(" ")[1] || "",
@@ -26,12 +35,22 @@ export default function UserCard({ user }: UserCardProps) {
   const [isEditing, setIsEditing] = useState(false);
 
   const updateUserInfo = async () => {
-    // TODO: Update user
     await updateUser({
       id: user.id,
       data: { ...data, role: "STUDENT", studentNumber: user.studentNumber! },
     });
     setIsEditing(false);
+  };
+
+  const updateCourseList = (courses: string[]) => {
+    const newCourses = courses.filter(
+      (course) => getCourseError(course) === ""
+    );
+    const dedupedCourses = [...new Set(newCourses)];
+    const formattedCourses = dedupedCourses.map((course) =>
+      formatClass(course).toUpperCase()
+    );
+    setData((prev) => ({ ...prev, courses: formattedCourses }));
   };
 
   return (
@@ -70,12 +89,7 @@ export default function UserCard({ user }: UserCardProps) {
         <label className={styles.courseLable}>Courses</label>
         <TagsInput
           value={data.courses}
-          onChange={(courses) =>
-            setData((prev) => ({
-              ...prev,
-              courses: courses.map((course) => course.toUpperCase()),
-            }))
-          }
+          onChange={updateCourseList}
           name="fruits"
           disabled={!isEditing}
           classNames={{ tag: styles.tag, input: styles.tagsInput }}

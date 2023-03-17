@@ -12,5 +12,6 @@
     gap: 4rem;
     margin-top: 3rem;
     max-width: var(--max-width);
+    margin-bottom: 4rem;
   }
 }

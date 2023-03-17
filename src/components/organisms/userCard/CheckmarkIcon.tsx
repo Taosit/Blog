@@ -16,11 +16,12 @@ export default function CheckmarkIcon({
       {...props}
     >
       <path
+        className={styles.stokePath}
         d="M4 17L9 22L21 10M16 20L18 22L30 10"
         stroke="#D4D4D4"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

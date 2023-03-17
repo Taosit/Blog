@@ -18,11 +18,11 @@ export default function BlogStats({ posts, userId }: BlogStatsType) {
       <div className={styles.statsContainer}>
         <div className={styles.stat}>
           <span className={styles.number}>{posts.length}</span>
-          <span>Posts in {getTerm()}</span>
+          <span className={styles.statText}>Posts in {getTerm()}</span>
         </div>
         <div className={styles.stat}>
           <span className={styles.number}>{posts.length}</span>
-          <span>Total posts</span>
+          <span className={styles.statText}>Total posts</span>
         </div>
       </div>
     </div>

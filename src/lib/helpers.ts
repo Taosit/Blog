@@ -76,7 +76,7 @@ export const isFormInvalid = (form: accountFields) => {
   );
 };
 
-export const isUserUpdateSubmissionValid = (data: userUpdateFields) => {
+export const isUserUpdateSubmissionInvalid = (data: userUpdateFields) => {
   const { role, studentNumber, firstName, lastName, courses } = data;
   return (
     (role === "STUDENT" &&

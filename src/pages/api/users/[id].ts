@@ -3,8 +3,7 @@ import {
   updateColor,
   updateStudentCourses,
 } from "@/lib/dbActions";
-import { isUserUpdateSubmissionValid } from "@/lib/helpers";
-import client from "@/lib/prismadb";
+import { isUserUpdateSubmissionInvalid } from "@/lib/helpers";
 import { userUpdateFields } from "@/types/types";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
@@ -15,7 +14,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!session) return res.status(401);
   const { firstName, lastName, role, studentNumber, courses, color } =
     req.body as userUpdateFields;
-  if (isUserUpdateSubmissionValid(req.body)) return res.status(400);
+  if (isUserUpdateSubmissionInvalid(req.body)) return res.status(400);
   const userId = req.query.id as string;
   await updateBasicUserInfo(
     userId,

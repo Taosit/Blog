@@ -8,6 +8,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
   if (!session) return res.status(401);
   const { image, userId } = req.body;
+  if (!image) {
+    await updateAvatar(userId, "");
+    return res.status(204);
+  }
   const imageUrl = await uploadToCloudinary(image);
   await updateAvatar(userId, imageUrl.secure_url);
 

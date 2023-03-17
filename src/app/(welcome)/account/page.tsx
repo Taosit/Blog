@@ -10,7 +10,7 @@ import { accountFields, userFields } from "@/types/types";
 import { StudentAccountFields } from "@/components/organisms/studentAccountFields/StudentAccountFields";
 import { ProfessorAccountFields } from "@/components/organisms/professorAccountFields/ProfessorAccountFields";
 import { useSession } from "next-auth/react";
-import { updateUser } from "@/lib/api";
+import { updateUser, updateUserImage } from "@/lib/api";
 
 type Role = "STUDENT" | "TEACHER";
 
@@ -82,8 +82,10 @@ const Account = () => {
       color: { h: Math.floor(Math.random() * 360), s: 100, l: 80 },
     };
     updateUser({ id: user.id, data: formatedData })
-      .then((data) => {
-        const callbackUrl = searchParams?.get("callbackUrl") || "/profile";
+      .then(() => {
+        updateUserImage({ userId: user.id, image: "" });
+        const callbackUrl =
+          searchParams?.get("callbackUrl") || `/user/${user.id}}`;
         console.log({ callbackUrl });
         router.push(callbackUrl);
       })

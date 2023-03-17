@@ -1,6 +1,5 @@
 // export { default } from "next-auth/middleware";
 import { withAuth } from "next-auth/middleware";
-import { NextResponse } from "next/server";
 
 export default withAuth({
   callbacks: {
@@ -10,9 +9,8 @@ export default withAuth({
       // return !!token;
     },
   },
-  secret: "hperfidlz",
 });
 
 export const config = {
-  matcher: ["/account", "/profile"],
+  matcher: ["/account", "/user/:path*"],
 };

@@ -121,8 +121,8 @@
     gap: 1.5rem;
   }
   .imageContainer {
-    width: 180px;
-    height: 180px;
+    width: 140px;
+    height: 140px;
   }
   .username {
     font-size: 2rem;
@@ -132,5 +132,12 @@
 @media (min-width: 685px) {
   .container {
     max-width: var(--max-width);
+  }
+}
+
+@media (min-width: 900px) {
+  .imageContainer {
+    width: 180px;
+    height: 180px;
   }
 }

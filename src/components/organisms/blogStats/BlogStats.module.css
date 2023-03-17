@@ -34,4 +34,7 @@
     width: auto;
     align-self: auto;
   }
+  .statText {
+    font-size: 1.2rem;
+  }
 }
