@@ -1,8 +1,10 @@
 "use client";
 
+import CoursesInput from "@/components/atoms/coursesInput/CoursesInput";
 import { InputGroup } from "@/components/atoms/inputGroup/InputGroup";
 import {
   getCourseError,
+  getCoursesError,
   getNameError,
   getStudentNumberError,
 } from "@/lib/helpers";
@@ -41,13 +43,11 @@ export const StudentAccountFields = ({ data, setData }: StudentProps) => {
         }
         validate={(str) => getNameError(str, "last")}
       />
-      <InputGroup
-        label="What course are your blog articles for?"
-        value={data.course}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setData((prev) => ({ ...prev, course: e.target.value }))
-        }
-        validate={getCourseError}
+      <CoursesInput
+        label="What courses are your blog articles for?"
+        value={data.courses}
+        setCourses={(courses) => setData((prev) => ({ ...prev, courses }))}
+        validate={getCoursesError}
       />
     </>
   );

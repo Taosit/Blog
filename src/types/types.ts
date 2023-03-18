@@ -4,7 +4,7 @@ export type accountFields = {
   studentNumber: string;
   firstName: string;
   lastName: string;
-  course: string;
+  courses: string[];
 };
 
 export type userUpdateFields = {

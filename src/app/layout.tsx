@@ -1,15 +1,16 @@
 "use client";
+import ProtectedRoutes from "@/components/atoms/protectedRoutes/ProtectedRoutes";
 import "@/styles/global.css";
 import { SessionProvider } from "next-auth/react";
-import { PropsWithChildren, ReactNode } from "react";
+import { PropsWithChildren } from "react";
 
-type Props = {};
-
-export default function RootLayout({ children }: PropsWithChildren<Props>) {
+export default function RootLayout({ children }: PropsWithChildren<{}>) {
   return (
     <html lang="en">
       <body>
-        <SessionProvider>{children}</SessionProvider>
+        <SessionProvider>
+          <ProtectedRoutes>{children}</ProtectedRoutes>
+        </SessionProvider>
       </body>
     </html>
   );

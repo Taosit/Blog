@@ -62,9 +62,22 @@ export const getCourseError = (str: string) => {
   }
 };
 
+export const getCoursesError = (courses: string[]) => {
+  if (courses.length === 0) {
+    return "Courses must be filled.";
+  }
+  return "";
+};
+
 export const isFormInvalid = (form: accountFields) => {
-  const { isStudent, isProfessor, studentNumber, firstName, lastName, course } =
-    form;
+  const {
+    isStudent,
+    isProfessor,
+    studentNumber,
+    firstName,
+    lastName,
+    courses,
+  } = form;
 
   return (
     isStudent === "" ||
@@ -72,7 +85,7 @@ export const isFormInvalid = (form: accountFields) => {
     (isStudent === "Yes" && getStudentNumberError(studentNumber)) ||
     getNameError(firstName, "first") ||
     getNameError(lastName, "last") ||
-    getCourseError(course)
+    getCoursesError(courses)
   );
 };
 
@@ -83,7 +96,7 @@ export const isUserUpdateSubmissionInvalid = (data: userUpdateFields) => {
       (!studentNumber || getStudentNumberError(studentNumber))) ||
     getNameError(firstName, "first") ||
     getNameError(lastName, "last") ||
-    courses.some((course) => getCourseError(course))
+    getCoursesError(courses)
   );
 };
 

@@ -4,12 +4,12 @@ import React, { useEffect, useState } from "react";
 import styles from "./UserCard.module.css";
 import { User, Class, Post } from "@prisma/client";
 import { InputGroup } from "@/components/atoms/inputGroup/InputGroup";
-import { getNameError, getCourseError, formatClass } from "@/lib/helpers";
+import { getNameError } from "@/lib/helpers";
 import { EditIcon } from "./EditIcon";
 import CheckmarkIcon from "./CheckmarkIcon";
-import { TagsInput } from "react-tag-input-component";
 import { updateUser } from "@/lib/api";
 import { useRouter } from "next/navigation";
+import CoursesInput from "@/components/atoms/coursesInput/CoursesInput";
 
 type UserCardProps = {
   user: User & {
@@ -40,17 +40,6 @@ export default function UserCard({ user }: UserCardProps) {
       data: { ...data, role: "STUDENT", studentNumber: user.studentNumber! },
     });
     setIsEditing(false);
-  };
-
-  const updateCourseList = (courses: string[]) => {
-    const newCourses = courses.filter(
-      (course) => getCourseError(course) === ""
-    );
-    const dedupedCourses = [...new Set(newCourses)];
-    const formattedCourses = dedupedCourses.map((course) =>
-      formatClass(course).toUpperCase()
-    );
-    setData((prev) => ({ ...prev, courses: formattedCourses }));
   };
 
   return (
@@ -85,16 +74,11 @@ export default function UserCard({ user }: UserCardProps) {
           validate={(str) => getNameError(str, "last")}
         />
       </div>
-      <div>
-        <label className={styles.courseLable}>Courses</label>
-        <TagsInput
-          value={data.courses}
-          onChange={updateCourseList}
-          name="fruits"
-          disabled={!isEditing}
-          classNames={{ tag: styles.tag, input: styles.tagsInput }}
-        />
-      </div>
+      <CoursesInput
+        value={data.courses}
+        disabled={!isEditing}
+        setCourses={(courses) => setData((prev) => ({ ...prev, courses }))}
+      />
     </div>
   );
 }

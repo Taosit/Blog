@@ -21,24 +21,6 @@
   right: 0.5rem;
 }
 
-.tagsInput {
-  width: 70px;
-  flex-grow: 1;
-}
-
-.tagsInput:disabled {
-  background-color: transparent;
-}
-
-.tag {
-  background-color: var(--gray-light);
-  gap: 0.25rem;
-}
-
-.tag > * {
-  color: var(--variant-dark);
-}
-
 .courseLable {
   display: inline-block;
   margin-bottom: 0.5rem;

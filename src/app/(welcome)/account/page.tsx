@@ -21,7 +21,7 @@ const Account = () => {
     studentNumber: "",
     firstName: "",
     lastName: "",
-    course: "",
+    courses: ["fren101"],
   };
 
   const [data, setData] = useState<accountFields>(initialData);
@@ -42,7 +42,6 @@ const Account = () => {
 
   useEffect(() => {
     if (session.status === "loading") {
-      console.log("loading");
       return;
     }
     if (!session.data?.user) {
@@ -78,7 +77,7 @@ const Account = () => {
       lastName: data.lastName,
       role: (data.isStudent ? "STUDENT" : "TEACHER") as Role,
       studentNumber: data.studentNumber,
-      courses: [data.course],
+      courses: data.courses,
       color: { h: Math.floor(Math.random() * 360), s: 100, l: 80 },
     };
     updateUser({ id: user.id, data: formatedData })

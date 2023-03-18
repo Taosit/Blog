@@ -1,8 +1,9 @@
 "use client";
 
+import CoursesInput from "@/components/atoms/coursesInput/CoursesInput";
 import { InputGroup } from "@/components/atoms/inputGroup/InputGroup";
 import { Radio } from "@/components/atoms/radio/Radio";
-import { getCourseError, getNameError } from "@/lib/helpers";
+import { getCoursesError, getNameError } from "@/lib/helpers";
 import { accountFields } from "@/types/types";
 import React, { useRef } from "react";
 import styles from "./ProfessorAccountFields.module.css";
@@ -55,13 +56,11 @@ export const ProfessorAccountFields = ({
             }
             validate={(str) => getNameError(str, "last")}
           />
-          <InputGroup
-            label="What course do you use the platform for?"
-            value={data.course}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setData((prev) => ({ ...prev, course: e.target.value }))
-            }
-            validate={getCourseError}
+          <CoursesInput
+            label="What courses are you using the platform for?"
+            value={data.courses}
+            setCourses={(courses) => setData((prev) => ({ ...prev, courses }))}
+            validate={getCoursesError}
           />{" "}
         </>
       ) : (

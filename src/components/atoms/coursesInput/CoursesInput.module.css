@@ -1,0 +1,25 @@
+.tagsInput {
+  width: 70px;
+  flex-grow: 1;
+}
+
+.tagsInput:disabled {
+  background-color: transparent;
+}
+
+.tag {
+  background-color: var(--gray-light);
+  gap: 0.25rem;
+}
+
+.tag > * {
+  color: var(--variant-dark);
+}
+
+.error {
+  margin-top: 0.125rem;
+  font-size: 0.9rem;
+  color: var(--error);
+  height: 18.5px;
+  min-width: 1px;
+}
