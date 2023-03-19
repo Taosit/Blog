@@ -23,7 +23,7 @@ export type userFields = {
   image?: string;
   color?: string;
   classes?: any[];
-  role: "STUDENT" | "Professor";
+  role: "STUDENT" | "TEACHER";
   studentNumber: null;
   posts?: any[];
 };

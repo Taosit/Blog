@@ -1,6 +1,6 @@
 "use client";
 import { Radio } from "@/components/atoms/radio/Radio";
-import { isFormInvalid } from "@/lib/helpers";
+import { formatAccountFormData, isFormInvalid } from "@/lib/helpers";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import styles from "./Account.module.css";
@@ -11,8 +11,8 @@ import { StudentAccountFields } from "@/components/organisms/studentAccountField
 import { ProfessorAccountFields } from "@/components/organisms/professorAccountFields/ProfessorAccountFields";
 import { useSession } from "next-auth/react";
 import { updateUser, updateUserImage } from "@/lib/api";
-
-type Role = "STUDENT" | "TEACHER";
+import { useProtectAccountPage } from "@/hooks/useProtectAccountPage";
+import ProtectedRoute from "@/components/atoms/protectedRoute/ProtectedRoute";
 
 const Account = () => {
   const initialData = {
@@ -29,11 +29,11 @@ const Account = () => {
   const [professorSelectError, setProfessorSelectError] = useState("");
 
   const session = useSession();
-
-  const formRef = useRef<HTMLFormElement>(null);
-
   const router = useRouter();
   const searchParams = useSearchParams();
+  useProtectAccountPage();
+
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     if (!formRef.current) return;
@@ -41,14 +41,7 @@ const Account = () => {
   }, [formRef]);
 
   useEffect(() => {
-    if (session.status === "loading") {
-      return;
-    }
-    if (!session.data?.user) {
-      router.push("/signin");
-      return;
-    }
-    if (!session.data.user.name) return;
+    if (!session.data?.user?.name) return;
     const [firstName, lastName] = session.data.user.name.split(" ");
     setData((prev) => ({ ...prev, firstName, lastName }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -72,20 +65,11 @@ const Account = () => {
     }
     if (isFormInvalid(data)) return;
     const user = session.data.user as userFields;
-    const formatedData = {
-      firstName: data.firstName,
-      lastName: data.lastName,
-      role: (data.isStudent ? "STUDENT" : "TEACHER") as Role,
-      studentNumber: data.studentNumber,
-      courses: data.courses,
-      color: { h: Math.floor(Math.random() * 360), s: 100, l: 80 },
-    };
-    updateUser({ id: user.id, data: formatedData })
+    updateUser({ id: user.id, data: formatAccountFormData(data) })
       .then(() => {
         updateUserImage({ userId: user.id, image: "" });
         const callbackUrl =
           searchParams?.get("callbackUrl") || `/user/${user.id}}`;
-        console.log({ callbackUrl });
         router.push(callbackUrl);
       })
       .catch((e) => console.log(e));
@@ -126,4 +110,12 @@ const Account = () => {
   );
 };
 
-export default Account;
+const ProtectedAccount = () => {
+  return (
+    <ProtectedRoute>
+      <Account />
+    </ProtectedRoute>
+  );
+};
+
+export default ProtectedAccount;

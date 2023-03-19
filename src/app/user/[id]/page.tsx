@@ -8,6 +8,7 @@ import { blogType } from "@/types/types";
 import React from "react";
 import styles from "./Profile.module.css";
 import { notFound } from "next/navigation";
+import ProtectedRoute from "@/components/atoms/protectedRoute/ProtectedRoute";
 
 const getUser = async (id: string) => {
   const user = await client.user.findUnique({
@@ -26,16 +27,17 @@ const getUser = async (id: string) => {
   return user;
 };
 
-const Profile = async ({ params }: { params: { id: string } }) => {
+const Profile = async ({ id }: { id: string }) => {
   const getBlog = (): Promise<blogType[]> => new Promise((res) => res(blogs));
-  const user = await getUser(params.id);
+  console.log({ id });
+  const user = await getUser(id);
 
   return (
     <div>
       <TopBar user={user} />
       <div className={styles.column}>
         <UserCard user={user} />
-        <BlogStats posts={user.posts} userId={params.id} />
+        <BlogStats posts={user.posts} userId={id} />
       </div>
       {/* @ts-expect-error Server Component */}
       <BlogCards promise={getBlog()} showAuthor={false} />\
@@ -43,4 +45,13 @@ const Profile = async ({ params }: { params: { id: string } }) => {
   );
 };
 
-export default Profile;
+const ProtectedProfile = async ({ params }: { params: { id: string } }) => {
+  return (
+    <ProtectedRoute>
+      {/* @ts-expect-error Server Component */}
+      <Profile id={params.id} />
+    </ProtectedRoute>
+  );
+};
+
+export default ProtectedProfile;

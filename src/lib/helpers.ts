@@ -89,6 +89,19 @@ export const isFormInvalid = (form: accountFields) => {
   );
 };
 
+type Role = "STUDENT" | "TEACHER";
+
+export const formatAccountFormData = (data: accountFields) => {
+  return {
+    firstName: data.firstName,
+    lastName: data.lastName,
+    role: (data.isStudent ? "STUDENT" : "TEACHER") as Role,
+    studentNumber: data.studentNumber,
+    courses: data.courses,
+    color: { h: Math.floor(Math.random() * 360), s: 100, l: 80 },
+  };
+};
+
 export const isUserUpdateSubmissionInvalid = (data: userUpdateFields) => {
   const { role, studentNumber, firstName, lastName, courses } = data;
   return (
