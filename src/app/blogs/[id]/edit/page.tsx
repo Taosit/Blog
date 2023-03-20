@@ -1,17 +1,26 @@
-import ProtectedRoute from "@/components/atoms/protectedRoute/ProtectedRoute";
+"use client";
+
+import { Button } from "@/components/atoms/button/Button";
+import { BlogForm } from "@/components/organisms/blogForm/BlogForm";
 import React from "react";
+import styles from "./EditBlog.module.css";
 
-const EditBlog = async () => {
-  return <div>EditBlog</div>;
-};
-
-const ProtectedNewBlog = async () => {
+const EditBlog = () => {
+  const save = () => {};
   return (
-    <ProtectedRoute>
-      {/* @ts-expect-error Server Component */}
-      <EditBlog />
-    </ProtectedRoute>
+    <div className={styles.container}>
+      <button className={styles.topSaveButton} onClick={save}>
+        Save
+      </button>
+      <BlogForm />
+      <div className={styles.buttonContainer}>
+        <button className={styles.discardButton}>Discard Changes</button>
+        <Button className={styles.bottomSaveButton} onClick={save}>
+          Save
+        </Button>
+      </div>
+    </div>
   );
 };
 
-export default ProtectedNewBlog;
+export default EditBlog;

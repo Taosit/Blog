@@ -46,28 +46,20 @@ model VerificationToken {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String     @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?    @unique
   emailVerified DateTime?
   image         String?
-  color         Color?
-  role          Role      @default(STUDENT)
+  color         Json?
+  role          Role       @default(STUDENT)
   studentNumber String?
   classes       Class[]
   posts         Post[]
+  savedPost     SavedPost?
   comments      Comment[]
   accounts      Account[]
   sessions      Session[]
-}
-
-model Color {
-  id     String  @id @default(cuid())
-  h      Int
-  s      Int
-  l      Int
-  userId String? @unique
-  user   User?   @relation(fields: [userId], references: [id])
 }
 
 enum Role {
@@ -75,36 +67,50 @@ enum Role {
   TEACHER
 }
 
+enum CoverType {
+  IMAGE
+  COLOR
+}
+
 model Class {
-  id    String @id @default(cuid())
-  name  String
-  term  String
-  users User[]
-  posts Post[]
+  id        String      @id @default(cuid())
+  name      String
+  term      String
+  users     User[]
+  posts     Post[]
+  SavedPost SavedPost[]
 
   @@unique([name, term], name: "courseIdentifier")
 }
 
 model Post {
-  id         String    @id @default(cuid())
-  title      String
-  createdAt  DateTime  @default(now())
-  background String
-  class      Class     @relation(fields: [classId], references: [id])
-  tags       String[]
-  content    Content[]
-  author     User      @relation(fields: [authorId], references: [id])
-  authorId   String
-  comments   Comment[]
-  classId    String
+  id        String    @id @default(cuid())
+  title     String
+  createdAt DateTime  @default(now())
+  coverType CoverType @default(COLOR)
+  color     Json?
+  image     String?
+  class     Class     @relation(fields: [classId], references: [id])
+  classId   String
+  tags      String[]
+  content   Json
+  author    User      @relation(fields: [authorId], references: [id])
+  authorId  String
+  comments  Comment[]
 }
 
-model Content {
-  id      String @id @default(cuid())
-  order   Int    @default(autoincrement())
-  content String
-  post    Post   @relation(fields: [postId], references: [id])
-  postId  String
+model SavedPost {
+  id        String    @id @default(cuid())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String    @unique
+  title     String?
+  coverType CoverType @default(COLOR)
+  color     Json?
+  image     String?
+  class     Class?    @relation(fields: [classId], references: [id])
+  classId   String?
+  tags      String[]
+  content   Json
 }
 
 model Comment {

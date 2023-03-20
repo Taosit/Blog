@@ -1,15 +1,15 @@
-import { HslColorType, userUpdateFields } from "@/types/types";
+import { HslColorType, savedPostType, userUpdateFields } from "@/types/types";
 
 export type fetcherProps = {
   url: string;
-  method?: "get" | "post" | "put" | "delete";
+  method?: "GET" | "POST" | "PUT" | "DELETE";
   body?: { [key: string]: any };
   json?: boolean;
 };
 
 export const fetcher = async ({
   url,
-  method = "get",
+  method = "GET",
   body,
   json = true,
 }: fetcherProps) => {
@@ -36,7 +36,7 @@ export const fetcher = async ({
 export const updateUser = (user: { id: string; data: userUpdateFields }) => {
   return fetcher({
     url: `/api/users/${user.id}`,
-    method: "put",
+    method: "PUT",
     body: user.data,
   });
 };
@@ -46,8 +46,8 @@ export const updateUserColor = (data: {
   userId: string;
 }) => {
   return fetcher({
-    url: `/api/color`,
-    method: "put",
+    url: `/api/users/${data.userId}/color`,
+    method: "PUT",
     body: data,
   });
 };
@@ -55,11 +55,27 @@ export const updateUserColor = (data: {
 export const updateUserImage = (data: { image: string; userId: string }) => {
   return fetcher({
     url: `/api/avatar`,
-    method: "put",
+    method: "PUT",
     body: data,
   });
 };
 
-export const getUser = (id: string) => {
+export const fetchUser = (id: string) => {
   return fetcher({ url: `/api/users/${id}` });
+};
+
+export const fetchUserClasses = (id: string) => {
+  return fetcher({ url: `/api/users/${id}/classes` });
+};
+
+export const fetchSavedPost = (id: string) => {
+  return fetcher({ url: `/api/savedPost/${id}` });
+};
+
+export const savePost = (userId: string, post: savedPostType) => {
+  return fetcher({
+    url: `/api/savedPost`,
+    method: "PUT",
+    body: { userId, post },
+  });
 };

@@ -1,14 +1,5 @@
 import { accountFields, HslColorType, userUpdateFields } from "@/types/types";
 
-export const darkenColor = (color: string) => {
-  const num = parseInt(color.substring(1), 16);
-  const r = (num >> 16) - 50;
-  const b = ((num >> 8) & 0x00ff) - 50;
-  const g = (num & 0x0000ff) - 50;
-  const newColor = g | (b << 8) | (r << 16);
-  return `#${newColor.toString(16)}`;
-};
-
 export const getEmailError = (str: string) => {
   const regex =
     /(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/;
@@ -129,6 +120,10 @@ export const formatClass = (name: string) => {
 export const toColorString = (color: HslColorType) => {
   const { h, s, l } = color;
   return `hsl(${h} ${s}% ${l}%)`;
+};
+
+export const darkenColor = (color: HslColorType) => {
+  return { ...color, l: Math.max(20, color.l - 50) };
 };
 
 export async function cropImageSquare(

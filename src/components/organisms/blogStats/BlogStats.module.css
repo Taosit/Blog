@@ -7,8 +7,17 @@
   align-self: flex-end;
 }
 
-.container button {
+.buttonLink {
   align-self: flex-end;
+  text-decoration: none;
+  background-color: var(--variant-light);
+  color: var(--variant-dark);
+  font-size: 1rem;
+  border-radius: 4px;
+  padding: 4px 16px;
+  color: var(--variant-dark);
+  font-size: 1.2rem;
+  padding: 6px 20px;
 }
 
 .statsContainer {
@@ -33,6 +42,9 @@
     padding-bottom: 1.5rem;
     width: auto;
     align-self: auto;
+  }
+  .buttonLink {
+    font-size: 1.5rem;
   }
   .statText {
     font-size: 1.2rem;

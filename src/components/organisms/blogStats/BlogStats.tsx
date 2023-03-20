@@ -1,10 +1,8 @@
-"use client";
-
 import React from "react";
 import styles from "./BlogStats.module.css";
 import { Post } from "@prisma/client";
-import { Button } from "@/components/atoms/button/Button";
 import { getTerm } from "@/lib/helpers";
+import Link from "next/link";
 
 type BlogStatsType = {
   posts: Post[];
@@ -14,7 +12,9 @@ type BlogStatsType = {
 export default function BlogStats({ posts, userId }: BlogStatsType) {
   return (
     <div className={styles.container}>
-      <Button size="large">New Post</Button>
+      <Link href="/blogs/new" className={styles.buttonLink}>
+        New Post
+      </Link>
       <div className={styles.statsContainer}>
         <div className={styles.stat}>
           <span className={styles.number}>{posts.length}</span>

@@ -1,0 +1,31 @@
+.container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  padding: 1rem 2rem;
+}
+
+.closeButton {
+  align-self: flex-end;
+  color: var(--text-light);
+}
+
+.buttonContainer {
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+}
+
+.saveButton {
+  color: var(--variant-dark);
+}
+
+.discardButton {
+  color: var(--text-light);
+}
+
+.publishButton {
+  margin-left: auto;
+}

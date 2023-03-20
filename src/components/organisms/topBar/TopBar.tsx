@@ -6,7 +6,7 @@ import styles from "./TopBar.module.css";
 import { DefaultAvatar } from "@/components/atoms/defaultAvatar/DefaultAvatar";
 import Link from "next/link";
 import doubleLeft from "./double-left.svg";
-import { Class, Color, Post, User } from "@prisma/client";
+import { Class, Post, User } from "@prisma/client";
 import { HslColorType } from "@/types/types";
 import { cropImageSquare, toColorString } from "@/lib/helpers";
 import ColorPicker from "@/components/atoms/colorPicker/ColorPicker";
@@ -15,7 +15,6 @@ import { useRouter } from "next/navigation";
 
 type TopBarProps = {
   user: User & {
-    color: Color | null;
     classes: Class[];
     posts: Post[];
   };
@@ -23,11 +22,8 @@ type TopBarProps = {
 
 export default function TopBar({ user }: TopBarProps) {
   const { name, color: initialColor, image } = user;
-  const [color, setColor] = useState<HslColorType>({
-    h: initialColor?.h || 0,
-    s: initialColor?.s || 100,
-    l: 80,
-  });
+  const hslColor = initialColor as HslColorType;
+  const [color, setColor] = useState<HslColorType>(hslColor);
   const backgroundImage = `linear-gradient(180deg, ${toColorString(
     color
   )} 66.67%, white 66.67%)`;
@@ -84,10 +80,7 @@ export default function TopBar({ user }: TopBarProps) {
             {image ? (
               <Image src={image} alt="avatar" fill />
             ) : (
-              <DefaultAvatar
-                color={toColorString({ ...color, s: 30, l: 40 })}
-                className={styles.defaultAvatar}
-              />
+              <DefaultAvatar color={color} className={styles.defaultAvatar} />
             )}
             <div
               className={styles.overlay}

@@ -18,7 +18,6 @@ const getUser = async (id: string) => {
     include: {
       posts: true,
       classes: true,
-      color: true,
     },
   });
   if (!user) {
@@ -29,7 +28,6 @@ const getUser = async (id: string) => {
 
 const Profile = async ({ id }: { id: string }) => {
   const getBlog = (): Promise<blogType[]> => new Promise((res) => res(blogs));
-  console.log({ id });
   const user = await getUser(id);
 
   return (

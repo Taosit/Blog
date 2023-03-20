@@ -1,3 +1,5 @@
+import { Class } from "@prisma/client";
+
 export type accountFields = {
   isStudent: string;
   isProfessor: string;
@@ -13,7 +15,7 @@ export type userUpdateFields = {
   role: "STUDENT" | "TEACHER";
   studentNumber: string | null;
   courses: string[];
-  color?: { h: number; s: number; l: number };
+  color?: HslColorType;
 };
 
 export type userFields = {
@@ -21,11 +23,23 @@ export type userFields = {
   email?: string;
   name?: string;
   image?: string;
-  color?: string;
+  color?: HslColorType;
   classes?: any[];
   role: "STUDENT" | "TEACHER";
   studentNumber: null;
   posts?: any[];
+};
+
+export type coverType = "COLOR" | "IMAGE";
+
+export type savedPostType = {
+  title: string;
+  class?: Class | null;
+  tags: string[];
+  coverType: "COLOR" | "IMAGE";
+  color?: HslColorType;
+  image?: string;
+  content: object;
 };
 
 export type blogType = {

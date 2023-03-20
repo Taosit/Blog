@@ -1,0 +1,21 @@
+.topBlock {
+  position: absolute;
+  width: 100%;
+  height: var(--topbar-height);
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.page {
+  position: relative;
+  width: 90%;
+  display: flex;
+  margin: 1.5rem auto;
+  max-width: var(--max-width);
+  background-color: white;
+  min-height: calc(100vh - 3rem);
+  border-radius: 8px;
+  border: 2px solid var(--gray-light);
+  padding: 0;
+}
