@@ -1,9 +1,9 @@
-import { courses } from "@/seeds/courses";
-import { link } from "fs";
-import React from "react";
+import { fetchCoursesAndSemesters } from "@/lib/api";
+import React, { Suspense } from "react";
 import styles from "./WelcomeSidebar.module.css";
 
 export const WelcomeSidebar = () => {
+  const getFilters = fetchCoursesAndSemesters();
   const websiteName = "[Name]";
   return (
     <aside className={styles.container}>
@@ -14,12 +14,22 @@ export const WelcomeSidebar = () => {
           comments & reviews from their classmates and professors
         </p>
         <h3>Courses currently using {websiteName}:</h3>
-        <ul>
-          {courses.map((course) => (
-            <li key={course}>{course}</li>
-          ))}
-        </ul>
+        <Suspense fallback={<div>Loading...</div>}>
+          {/* @ts-expect-error Server Component */}
+          <Courses getFilters={getFilters} />
+        </Suspense>
       </div>
     </aside>
   );
 };
+
+async function Courses({ getFilters }: { getFilters: Promise<any> }) {
+  const { courses } = await getFilters;
+  return (
+    <ul>
+      {courses.map((course: string) => (
+        <li key={course}>{course.toUpperCase()}</li>
+      ))}
+    </ul>
+  );
+}
