@@ -4,12 +4,12 @@ import React, { useEffect, useState } from "react";
 import styles from "./UserCard.module.css";
 import { User, Class, Post } from "@prisma/client";
 import { InputGroup } from "@/components/atoms/inputGroup/InputGroup";
-import { getNameError } from "@/lib/helpers";
+import { formatClass, getNameError, isCourseValid } from "@/lib/helpers";
 import { EditIcon } from "./EditIcon";
 import CheckmarkIcon from "./CheckmarkIcon";
 import { updateUser } from "@/lib/api";
 import { useRouter } from "next/navigation";
-import CoursesInput from "@/components/atoms/coursesInput/CoursesInput";
+import TagsInputGroup from "@/components/atoms/tagsInputGroup/TagsInputGroup";
 
 type UserCardProps = {
   user: User & {
@@ -74,10 +74,12 @@ export default function UserCard({ user }: UserCardProps) {
           validate={(str) => getNameError(str, "last")}
         />
       </div>
-      <CoursesInput
+      <TagsInputGroup
         value={data.courses}
         disabled={!isEditing}
-        setCourses={(courses) => setData((prev) => ({ ...prev, courses }))}
+        setTags={(courses) => setData((prev) => ({ ...prev, courses }))}
+        validateEach={isCourseValid}
+        formatEach={formatClass}
       />
     </div>
   );

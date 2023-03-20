@@ -1,11 +1,11 @@
 .container {
   display: flex;
-  background-color: white;
 }
 
 .container button {
   padding: 4px 8px;
   border: 2px solid var(--variant-light);
+  background-color: white;
   transition: background-color 0.2s;
 }
 
@@ -25,7 +25,7 @@
   border-left-width: 1px;
 }
 
-.active {
+button.active {
   background-color: var(--variant-light);
   color: var(--variant-dark);
 }

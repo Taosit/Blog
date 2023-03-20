@@ -1,4 +1,37 @@
 .form {
   flex-grow: 1;
-  background-color: antiquewhite;
+  margin: 1rem 0;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.textInputGroup input {
+  border: none;
+  border-bottom: 1px solid var(--variant-light);
+  font-size: 1.125rem;
+}
+
+.error {
+  margin-top: 0.125rem;
+  font-size: 0.9rem;
+  color: var(--error);
+  height: 18.5px;
+  min-width: 1px;
+}
+
+@media (min-width: 768px) {
+  .row {
+    flex-direction: row;
+    gap: 4rem;
+  }
 }

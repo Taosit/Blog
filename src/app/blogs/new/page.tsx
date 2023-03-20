@@ -3,7 +3,12 @@
 import { Button } from "@/components/atoms/button/Button";
 import { BlogForm } from "@/components/organisms/blogForm/BlogForm";
 import { fetchSavedPost, fetchUserClasses, savePost } from "@/lib/api";
-import { coverType, savedPostType, userFields } from "@/types/types";
+import {
+  coverType,
+  draftPostType,
+  savedPostType,
+  userFields,
+} from "@/types/types";
 import { Class } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { notFound, useRouter } from "next/navigation";
@@ -12,16 +17,16 @@ import styles from "./NewBlog.module.css";
 
 const NewBlog = () => {
   const initialBlog = {
-    class: null,
+    class: "",
     title: "",
     coverType: "COLOR" as coverType,
-    color: { h: 0, s: 0, l: 100 },
+    color: { h: 170, s: 80, l: 80 },
     image: "",
     tags: [],
     content: {},
   };
 
-  const [blog, setBlog] = useState<savedPostType>(initialBlog);
+  const [blog, setBlog] = useState<draftPostType>(initialBlog);
   const router = useRouter();
   const { status, data: session } = useSession({
     required: true,
@@ -38,8 +43,8 @@ const NewBlog = () => {
     fetchSavedPost(user.id)
       .then((data) => {
         if (data) {
-          const { id, classId, userId, ...post } = data;
-          setBlog(post);
+          const { id, classId, class: classInfo, userId, ...post } = data;
+          setBlog({ ...post, class: classInfo.name.toUpperCase() });
         } else {
           return fetchUserClasses(user.id);
         }
@@ -47,7 +52,9 @@ const NewBlog = () => {
       .then((classes) => {
         if (classes && classes.length > 0) {
           const course = classes[0] as Class;
-          setBlog((prev) => ({ ...prev, class: course }));
+          setBlog((prev) => {
+            return { ...prev, class: course.name.toUpperCase() };
+          });
         }
       });
   }, [status, session]);
@@ -64,7 +71,7 @@ const NewBlog = () => {
       <button className={styles.closeButton} onClick={save}>
         Save and close
       </button>
-      <BlogForm blog={blog} />
+      <BlogForm blog={blog} setBlog={setBlog} />
       <div className={styles.buttonContainer}>
         <button className={styles.saveButton} onClick={save}>
           Save

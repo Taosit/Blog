@@ -42,6 +42,15 @@ export type savedPostType = {
   content: object;
 };
 
+export type draftPostType = {
+  class: string;
+  tags: string[];
+  coverType: "COLOR" | "IMAGE";
+  color?: HslColorType;
+  image?: string;
+  content: object;
+};
+
 export type blogType = {
   id: string;
   title: string;

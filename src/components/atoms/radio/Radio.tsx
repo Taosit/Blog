@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Radio.module.css";
 
 type RadioProps = {
   items: [string, string];
   onSelectItem: (item: string) => void;
-  hasDefault?: boolean;
+  hasDefault?: boolean | number;
 } & React.HTMLAttributes<HTMLDivElement>;
 
 export const Radio = ({
@@ -16,7 +16,14 @@ export const Radio = ({
   className,
   ...props
 }: RadioProps) => {
-  const [selectedItem, setSelectedItem] = useState(hasDefault ? 0 : null);
+  const [selectedItem, setSelectedItem] = useState(
+    hasDefault === false ? null : hasDefault
+  );
+
+  useEffect(() => {
+    if (hasDefault === false) return;
+    setSelectedItem(hasDefault);
+  }, [hasDefault]);
 
   const selectItem = (i: number) => {
     if (i === selectedItem) return;

@@ -10,20 +10,24 @@ import styles from "./ColorPicker.module.css";
 type ColorPickerProps = {
   color: HslColorType;
   onChange: (newColor: HslColorType) => void;
-  onSetColor: () => Promise<void>;
+  onSetColor?: () => any;
+  className?: string;
 };
 
 export default function ColorPicker({
   color,
   onChange,
   onSetColor,
+  className,
 }: ColorPickerProps) {
   const [showColorPicker, setShowColorPicker] = useState(false);
   const popover = useRef<HTMLDivElement>(null);
 
   const close = useCallback(() => {
     setShowColorPicker(false);
-    onSetColor();
+    if (onSetColor) {
+      onSetColor();
+    }
   }, [onSetColor]);
 
   useOnClickOutside(popover, close);
@@ -31,7 +35,8 @@ export default function ColorPicker({
   return (
     <div className={styles.container}>
       <button
-        className={styles.button}
+        type="button"
+        className={`${styles.button} ${className}}`}
         onClick={() => setShowColorPicker((prev) => !prev)}
         style={{ backgroundColor: toColorString(color) }}
       ></button>

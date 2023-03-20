@@ -1,3 +1,4 @@
+import { uploadToCloudinary } from "@/lib/cloudinary";
 import { updateSavedPost } from "@/lib/dbActions";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
@@ -9,7 +10,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { userId, post } = req.body;
   if (userId !== session.user.id) return res.status(403);
   if (req.method !== "PUT") return res.status(405);
-  const updatedPost = await updateSavedPost(userId, post);
+  if (post.image) {
+    post.image = await uploadToCloudinary(post.image);
+  }
+  const updatedPost = await updateSavedPost(userId, {
+    ...post,
+    image: post.image?.secure_url,
+  }).catch((err) => {
+    return res.status(500).json({ error: err.message });
+  });
   return res.status(200).json(updatedPost);
 };
 

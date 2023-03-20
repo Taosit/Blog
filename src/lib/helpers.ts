@@ -41,16 +41,15 @@ export const getNameError = (str: string, type: string) => {
   }
 };
 
-export const getCourseError = (str: string) => {
+export const isCourseValid = (str: string) => {
   const regex = /^[a-zA-Z]{4}\s?[1-7]\d{2}$/;
-
   if (str.length === 0) {
-    return "Course must be filled.";
-  } else if (!regex.test(str)) {
-    return "Invalid course.";
-  } else {
-    return "";
+    return false;
   }
+  if (!regex.test(str)) {
+    return false;
+  }
+  return true;
 };
 
 export const getCoursesError = (courses: string[]) => {
@@ -150,5 +149,29 @@ export async function cropImageSquare(
   const x = (canvas.width - size) / 2;
   const y = (canvas.height - size) / 2;
   croppedCtx!.drawImage(canvas, x, y, size, size, 0, 0, size, size);
+  return croppedCanvas.toDataURL();
+}
+
+export async function cropImageRectangle(imageUrl: string): Promise<string> {
+  const img = new Image();
+  img.src = imageUrl;
+  await new Promise((resolve) => {
+    img.onload = () => {
+      resolve(null);
+    };
+  });
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  const scale = Math.min(1000 / img.width, 200 / img.height);
+  canvas.width = img.width * scale;
+  canvas.height = img.height * scale;
+  ctx!.drawImage(img, 0, 0, canvas.width, canvas.height);
+  const croppedCanvas = document.createElement("canvas");
+  const croppedCtx = croppedCanvas.getContext("2d");
+  croppedCanvas.width = 1000;
+  croppedCanvas.height = 200;
+  const x = (canvas.width - 1000) / 2;
+  const y = (canvas.height - 200) / 2;
+  croppedCtx!.drawImage(canvas, x, y, 1000, 200, 0, 0, 1000, 200);
   return croppedCanvas.toDataURL();
 }

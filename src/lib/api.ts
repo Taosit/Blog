@@ -1,4 +1,9 @@
-import { HslColorType, savedPostType, userUpdateFields } from "@/types/types";
+import {
+  draftPostType,
+  HslColorType,
+  savedPostType,
+  userUpdateFields,
+} from "@/types/types";
 
 export type fetcherProps = {
   url: string;
@@ -72,7 +77,7 @@ export const fetchSavedPost = (id: string) => {
   return fetcher({ url: `/api/savedPost/${id}` });
 };
 
-export const savePost = (userId: string, post: savedPostType) => {
+export const savePost = (userId: string, post: draftPostType) => {
   return fetcher({
     url: `/api/savedPost`,
     method: "PUT",

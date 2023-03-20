@@ -1,4 +1,4 @@
-import { savedPostType } from "@/types/types";
+import { draftPostType, savedPostType } from "@/types/types";
 import { formatClass, getTerm } from "./helpers";
 import client from "./prismadb";
 
@@ -26,18 +26,34 @@ export const getSavedPost = async (id: string) => {
   return post;
 };
 
-export const updateSavedPost = async (id: string, post: savedPostType) => {
-  const { class: classInfo, ...rest } = post;
+export const updateSavedPost = async (id: string, post: draftPostType) => {
+  const { class: className, ...rest } = post;
+  const corespondingClass = await client.class.findUnique({
+    where: {
+      courseIdentifier: {
+        name: className.toLowerCase(),
+        term: getTerm(),
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+      users: { select: { id: true } },
+    },
+  });
+  if (!corespondingClass) throw new Error("Class not found");
+  const userIsInClass = corespondingClass.users.some((user) => user.id === id);
+  if (!userIsInClass) throw new Error("User is not in class");
   const updatedPost = await client.savedPost.upsert({
     where: {
       userId: id,
     },
     create: {
       userId: id,
-      classId: classInfo?.id || undefined,
+      classId: corespondingClass.id,
       ...rest,
     },
-    update: { ...rest },
+    update: { classId: corespondingClass.id, ...rest },
   });
   return updatedPost;
 };

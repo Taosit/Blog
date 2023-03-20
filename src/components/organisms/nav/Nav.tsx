@@ -11,7 +11,6 @@ import { userFields } from "@/types/types";
 export const Nav = () => {
   const session = useSession();
   const user = session.data?.user as userFields;
-  console.log({ user });
 
   return (
     <div className={styles.nav}>

@@ -1,12 +1,13 @@
 "use client";
 
-import CoursesInput from "@/components/atoms/coursesInput/CoursesInput";
+import TagsInputGroup from "@/components/atoms/tagsInputGroup/TagsInputGroup";
 import { InputGroup } from "@/components/atoms/inputGroup/InputGroup";
 import {
-  getCourseError,
+  formatClass,
   getCoursesError,
   getNameError,
   getStudentNumberError,
+  isCourseValid,
 } from "@/lib/helpers";
 import { accountFields } from "@/types/types";
 import React from "react";
@@ -43,11 +44,13 @@ export const StudentAccountFields = ({ data, setData }: StudentProps) => {
         }
         validate={(str) => getNameError(str, "last")}
       />
-      <CoursesInput
+      <TagsInputGroup
         label="What courses are your blog articles for?"
         value={data.courses}
-        setCourses={(courses) => setData((prev) => ({ ...prev, courses }))}
-        validate={getCoursesError}
+        setTags={(courses) => setData((prev) => ({ ...prev, courses }))}
+        validateEach={isCourseValid}
+        formatEach={formatClass}
+        validateAll={getCoursesError}
       />
     </>
   );
