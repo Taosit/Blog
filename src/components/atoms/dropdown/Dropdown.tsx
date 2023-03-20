@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import styles from "./Dropdown.module.css";
 import chevronDown from "./chevron-down.svg";
@@ -12,18 +12,30 @@ type DropdownProps = {
   onSelectItem: (item: string) => void;
 } & React.HTMLAttributes<HTMLDivElement>;
 
+type Item = {
+  name: string;
+  selected: boolean;
+};
+
 export const Dropdown = ({
   items: itemStrings,
   onSelectItem,
   className,
   ...props
 }: DropdownProps) => {
-  const initialItmes = itemStrings.map((item, i) => ({
-    name: item,
-    selected: i === 0,
-  }));
-  const [items, setItems] = useState(initialItmes);
+  const [items, setItems] = useState<Item[]>([
+    { name: "Select", selected: true },
+  ]);
   const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    setItems(
+      itemStrings.map((item, i) => ({
+        name: item,
+        selected: i === 0,
+      }))
+    );
+  }, [itemStrings.length]);
 
   const selectedItem = items.find((item) => item.selected);
   const otherItems = items.filter((item) => !item.selected);
@@ -52,16 +64,11 @@ export const Dropdown = ({
 
   useOnClickOutside(dropdownMenu, close);
 
-  // const handleBlur = () => {
-  //   setTimeout(() => setExpanded(false), 150);
-  // };
-
   return (
     <div className={`${styles.container} ${className}`} {...props}>
       <button
         className={styles.clickable}
         onClick={() => setExpanded((prev) => !prev)}
-        // onBlur={handleBlur}
       >
         <p>{selectedItem?.name}</p>
         <Image

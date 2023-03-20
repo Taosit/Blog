@@ -26,7 +26,6 @@ export const fetcher = async ({
       "Content-Type": "application/json",
     },
   });
-
   if (!res.ok) {
     // handle your errors
     throw new Error("API error");
@@ -73,11 +72,15 @@ export const fetchUserClasses = (id: string) => {
   return fetcher({ url: `/api/users/${id}/classes` });
 };
 
+export const fetchCoursesAndSemesters = () => {
+  return fetcher({ url: `${process.env.NEXTAUTH_URL}/api/classes` });
+};
+
 export const fetchSavedPost = (id: string) => {
   return fetcher({ url: `/api/savedPost/${id}` });
 };
 
-export const savePost = (userId: string, post: draftPostType) => {
+export const savePost = (userId: string, post: draftPostType | null) => {
   return fetcher({
     url: `/api/savedPost`,
     method: "PUT",

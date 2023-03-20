@@ -37,7 +37,7 @@
 .colorPickerContainer {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
   z-index: 1;
 }
 
@@ -58,4 +58,10 @@
 
 .imageInput {
   display: none;
+}
+
+@media (min-width: 500px) {
+  .colorPickerContainer {
+    gap: 1rem;
+  }
 }

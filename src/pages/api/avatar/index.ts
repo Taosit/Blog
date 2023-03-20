@@ -10,12 +10,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { image, userId } = req.body;
   if (!image) {
     await updateAvatar(userId, "");
-    return res.status(204);
+    return res.status(200).json({ data: "" });
   }
   const imageUrl = await uploadToCloudinary(image);
   await updateAvatar(userId, imageUrl.secure_url);
 
-  res.status(200).json({ data: imageUrl });
+  return res.status(200).json({ data: imageUrl });
 };
 
 export default handler;

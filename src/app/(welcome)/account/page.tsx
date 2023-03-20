@@ -67,12 +67,13 @@ const Account = () => {
     const user = session.data.user as userFields;
     updateUser({ id: user.id, data: formatAccountFormData(data) })
       .then(() => {
-        updateUserImage({ userId: user.id, image: "" });
+        return updateUserImage({ userId: user.id, image: "" });
+      })
+      .then(() => {
         const callbackUrl =
           searchParams?.get("callbackUrl") || `/user/${user.id}}`;
         router.push(callbackUrl);
-      })
-      .catch((e) => console.log(e));
+      });
   };
 
   return (

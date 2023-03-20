@@ -59,7 +59,7 @@ const NewBlog = () => {
       });
   }, [status, session]);
 
-  const save = async () => {
+  const save = async (blog: draftPostType | null) => {
     if (!session?.user) return;
     const user = session.user as userFields;
     await savePost(user.id, blog);
@@ -68,15 +68,17 @@ const NewBlog = () => {
 
   return (
     <div className={styles.container}>
-      <button className={styles.closeButton} onClick={save}>
+      <button className={styles.closeButton} onClick={() => save(blog)}>
         Save and close
       </button>
       <BlogForm blog={blog} setBlog={setBlog} />
       <div className={styles.buttonContainer}>
-        <button className={styles.saveButton} onClick={save}>
+        <button className={styles.saveButton} onClick={() => save(blog)}>
           Save
         </button>
-        <button className={styles.discardButton}>Discard</button>
+        <button className={styles.discardButton} onClick={() => save(null)}>
+          Discard
+        </button>
         <Button className={styles.publishButton}>Publish</Button>
       </div>
     </div>

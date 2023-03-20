@@ -27,6 +27,20 @@ export const getSavedPost = async (id: string) => {
   return post;
 };
 
+export const deleteSavedPost = async (id: string) => {
+  const postToDelete = await client.savedPost.findUnique({
+    where: {
+      userId: id,
+    },
+  });
+  if (!postToDelete) return;
+  await client.savedPost.delete({
+    where: {
+      userId: id,
+    },
+  });
+};
+
 export const updateSavedPost = async (id: string, post: draftPostType) => {
   const { class: className, ...rest } = post;
   const corespondingClass = await client.class.findUnique({
@@ -145,4 +159,16 @@ export const updateStudentCourses = async (
       classes: { set: [], connect: newCourseIds },
     },
   });
+};
+
+export const getCoursesAndSemesters = async () => {
+  const classes = await client.class.findMany({
+    select: {
+      name: true,
+      term: true,
+    },
+  });
+  const courses = [...new Set(classes.map((course) => course.name))];
+  const semesters = [...new Set(classes.map((course) => course.term))];
+  return { courses, semesters };
 };

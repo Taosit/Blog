@@ -12,7 +12,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.query.id !== session.user.id) return res.status(403);
   if (req.method === "GET") {
     const user = await getUser(req.query.id as string);
-    return res.status(200).json(user);
+    return res.status(200).json({ data: user });
   }
   if (req.method !== "PUT") return res.status(405);
 

@@ -3,14 +3,22 @@
 import { DefaultAvatar } from "@/components/atoms/defaultAvatar/DefaultAvatar";
 import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from "./Nav.module.css";
 import { userFields } from "@/types/types";
+import { fetchUser } from "@/lib/api";
 
 export const Nav = () => {
   const session = useSession();
-  const user = session.data?.user as userFields;
+  const [user, setUser] = useState<Partial<userFields>>({});
+  useEffect(() => {
+    if (!session.data?.user) return;
+    const user = session.data.user as userFields;
+    fetchUser(user.id).then((data) => {
+      setUser(data);
+    });
+  }, [session.data?.user]);
 
   return (
     <div className={styles.nav}>

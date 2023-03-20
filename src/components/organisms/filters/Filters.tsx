@@ -1,17 +1,26 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Filters.module.css";
 import { Dropdown } from "@/components/atoms/dropdown/Dropdown";
-import { courses } from "@/seeds/courses";
-import { terms } from "@/seeds/terms";
+// import { courses } from "@/seeds/courses";
+// import { terms } from "@/seeds/terms";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export const Filters = () => {
+export const Filters = ({ getFilters }: { getFilters: Promise<any> }) => {
   const sortItems = ["Popular", "New"];
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
+  const [courses, setCourses] = useState<string[]>([]);
+  const [terms, setTerms] = useState<string[]>([]);
+
+  useEffect(() => {
+    getFilters.then((res) => {
+      setCourses(res.courses);
+      setTerms(res.semesters);
+    });
+  }, [getFilters]);
 
   const setSearchParams = (obj: { [key: string]: string }) => {
     const params = new URLSearchParams(searchParams as URLSearchParams);

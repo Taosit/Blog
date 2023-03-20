@@ -1,5 +1,5 @@
 import { uploadToCloudinary } from "@/lib/cloudinary";
-import { updateSavedPost } from "@/lib/dbActions";
+import { deleteSavedPost, updateSavedPost } from "@/lib/dbActions";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
@@ -10,6 +10,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { userId, post } = req.body;
   if (userId !== session.user.id) return res.status(403);
   if (req.method !== "PUT") return res.status(405);
+  if (!post) {
+    await deleteSavedPost(userId);
+    return res.status(200).json({ message: "Post deleted" });
+  }
   if (post.image) {
     post.image = await uploadToCloudinary(post.image);
   }
