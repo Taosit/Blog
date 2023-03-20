@@ -1,4 +1,5 @@
 import { draftPostType, savedPostType } from "@/types/types";
+import { Prisma } from "@prisma/client";
 import { formatClass, getTerm } from "./helpers";
 import client from "./prismadb";
 
@@ -71,7 +72,7 @@ export const updateBasicUserInfo = async (
       name,
       role,
       studentNumber,
-      color,
+      color: color as Prisma.JsonObject,
     },
   });
 };
