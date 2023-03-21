@@ -22,7 +22,7 @@ export const Nav = () => {
 
   return (
     <div className={styles.nav}>
-      {user ? (
+      {user?.id ? (
         <Link href={`user/${user.id}`} className={styles.container}>
           {user?.image ? (
             <Image

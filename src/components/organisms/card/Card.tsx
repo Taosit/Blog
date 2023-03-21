@@ -2,7 +2,8 @@ import React from "react";
 import { DefaultAvatar } from "@/components/atoms/defaultAvatar/DefaultAvatar";
 import Image from "next/image";
 import styles from "./Card.module.css";
-import { darkenColor } from "@/lib/helpers";
+import { darkenColor, toColorString } from "@/lib/helpers";
+import { HslColorType } from "@/types/types";
 
 type CardProps = {
   title: string;
@@ -10,13 +11,13 @@ type CardProps = {
   author?: {
     name: string;
     avatar: string;
-    color: string;
+    color: HslColorType;
   };
   date: string;
   image: string;
-  color: string;
+  color: HslColorType;
   showAuthor: boolean;
-} & React.HTMLAttributes<HTMLDivElement>;
+};
 
 export const Card = ({
   title,
@@ -45,7 +46,7 @@ export const Card = ({
         style={
           image
             ? { backgroundImage: `url(${image})` }
-            : { backgroundColor: color }
+            : { backgroundColor: toColorString(color) }
         }
       >
         {showAuthor && author && (

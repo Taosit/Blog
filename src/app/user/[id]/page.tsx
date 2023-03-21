@@ -26,27 +26,28 @@ const getUser = async (id: string) => {
   if (!user) {
     notFound();
   }
-  await delay(1000);
+  await delay(5000);
   return user;
 };
 
+const getBlog = (): Promise<blogType[]> =>
+  new Promise((res) => {
+    setTimeout(() => {
+      res(blogs);
+    }, 2000);
+  });
+
 const Profile = async ({ id }: { id: string }) => {
-  const getBlog = (): Promise<blogType[]> =>
-    new Promise((res) => {
-      setTimeout(() => {
-        res(blogs);
-      }, 2000);
-    });
   const userPromise = getUser(id);
 
   return (
     <div>
       <TopBar userPromise={userPromise} />
-      <div className={styles.column}>
+      <div className={styles.row}>
         <UserCard userPromise={userPromise} />
         <Suspense fallback={<LoadingStats />}>
           {/* @ts-expect-error Server Component */}
-          <BlogStats postsPromise={getBlog()} userId={id} />
+          <BlogStats postsPromise={getBlog()} />
         </Suspense>
       </div>
       <Suspense fallback={<LoadingCards />}>

@@ -10,13 +10,9 @@ import Link from "next/link";
 
 type BlogStatsType = {
   postsPromise: Promise<any[]>;
-  userId: string;
 };
 
-export default async function BlogStats({
-  postsPromise,
-  userId,
-}: BlogStatsType) {
+export default async function BlogStats({ postsPromise }: BlogStatsType) {
   const posts = await postsPromise;
   return (
     <div className={styles.container}>

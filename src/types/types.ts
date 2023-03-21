@@ -58,11 +58,11 @@ export type blogType = {
   author: {
     name: string;
     avatar: string;
-    color: string;
+    color: HslColorType;
   };
   date: string;
   image: string;
-  color: string;
+  color: HslColorType;
 };
 
 export type HslColorType = {

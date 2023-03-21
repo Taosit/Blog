@@ -5,6 +5,8 @@ import React from "react";
 type DefaultAvatarProps = {
   color?: HslColorType;
   className?: string;
+  height?: number;
+  width?: number;
 };
 
 export const DefaultAvatar = ({
