@@ -5,7 +5,7 @@ import TopBar from "@/components/organisms/topBar/TopBar";
 import client from "@/lib/prismadb";
 import { blogs } from "@/seeds/blogs";
 import { blogType } from "@/types/types";
-import React from "react";
+import React, { Suspense } from "react";
 import styles from "./Profile.module.css";
 import { notFound } from "next/navigation";
 import ProtectedRoute from "@/components/atoms/protectedRoute/ProtectedRoute";
@@ -28,17 +28,18 @@ const getUser = async (id: string) => {
 
 const Profile = async ({ id }: { id: string }) => {
   const getBlog = (): Promise<blogType[]> => new Promise((res) => res(blogs));
-  const user = await getUser(id);
+  const userPromise = getUser(id);
 
   return (
     <div>
-      <TopBar user={user} />
+      <TopBar userPromise={userPromise} />
       <div className={styles.column}>
-        <UserCard user={user} />
-        <BlogStats posts={user.posts} userId={id} />
+        <UserCard userPromise={userPromise} />
+        {/* @ts-expect-error Server Component */}
+        <BlogStats postsPromise={getBlog()} userId={id} />
       </div>
       {/* @ts-expect-error Server Component */}
-      <BlogCards promise={getBlog()} showAuthor={false} />\
+      <BlogCards promise={getBlog()} showAuthor={false} />
     </div>
   );
 };

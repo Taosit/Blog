@@ -37,7 +37,7 @@ export const Filters = ({ getFilters }: { getFilters: Promise<any> }) => {
       />
       <Dropdown
         className={styles.coursesDropdown}
-        items={["All Courses", ...courses]}
+        items={["All Courses", ...courses.map((str) => str.toUpperCase())]}
         onSelectItem={(str) => setSearchParams({ course: str })}
       />
       <Dropdown

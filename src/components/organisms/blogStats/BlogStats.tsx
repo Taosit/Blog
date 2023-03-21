@@ -1,15 +1,23 @@
-import React from "react";
 import styles from "./BlogStats.module.css";
-import { Post } from "@prisma/client";
+import { Class, Post, User } from "@prisma/client";
 import { getTerm } from "@/lib/helpers";
 import Link from "next/link";
 
+// type UserType = User & {
+//   classes: Class[];
+//   posts: Post[];
+// };
+
 type BlogStatsType = {
-  posts: Post[];
+  postsPromise: Promise<any[]>;
   userId: string;
 };
 
-export default function BlogStats({ posts, userId }: BlogStatsType) {
+export default async function BlogStats({
+  postsPromise,
+  userId,
+}: BlogStatsType) {
+  const posts = await postsPromise;
   return (
     <div className={styles.container}>
       <Link href="/blogs/new" className={styles.buttonLink}>
