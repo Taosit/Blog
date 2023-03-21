@@ -1,0 +1,63 @@
+.loadingCard {
+  display: inline-block;
+  width: 100%;
+}
+
+.cardTop {
+  background-color: var(--gray-light);
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
+  padding: 1.25rem 1rem;
+  min-height: 150px;
+  position: relative;
+}
+
+.title,
+.tag {
+  background: #eee;
+  background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+  border-radius: 4px;
+  background-size: 200% 100%;
+  animation: 1.5s shine linear infinite;
+}
+
+.title {
+  height: 27.5px;
+  margin-bottom: 0.5rem;
+}
+
+.tagsContainer {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.tag {
+  height: 20px;
+  width: 40px;
+}
+
+.cardBottom {
+  height: 5rem;
+  border-radius: 0;
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  position: relative;
+  background: #eaeaea;
+  --darker: #d3cddb;
+  --lighter: #ddd9e3;
+  background: linear-gradient(
+    110deg,
+    var(--darker) 8%,
+    var(--lighter) 18%,
+    var(--darker) 33%
+  );
+  background-size: 200% 100%;
+  animation: 1.5s shine linear infinite;
+}
+
+@keyframes shine {
+  to {
+    background-position-x: -200%;
+  }
+}
