@@ -172,3 +172,23 @@ export const getCoursesAndSemesters = async () => {
   const semesters = [...new Set(classes.map((course) => course.term))];
   return { courses, semesters };
 };
+
+type classFilter = {
+  course?: string;
+  semester?: string;
+} | null;
+
+export const getClasses = async (filter: classFilter) => {
+  if (!filter || (!filter.course && !filter.semester)) {
+    const classes = await client.class.findMany();
+    return classes;
+  }
+  const { course, semester } = filter;
+  const classes = await client.class.findMany({
+    where: {
+      ...(course && { name: course }),
+      ...(semester && { term: semester }),
+    },
+  });
+  return classes;
+};

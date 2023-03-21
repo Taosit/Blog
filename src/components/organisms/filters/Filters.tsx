@@ -3,8 +3,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Filters.module.css";
 import { Dropdown } from "@/components/atoms/dropdown/Dropdown";
-// import { courses } from "@/seeds/courses";
-// import { terms } from "@/seeds/terms";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export const Filters = ({ getFilters }: { getFilters: Promise<any> }) => {

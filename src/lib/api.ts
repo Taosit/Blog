@@ -73,7 +73,7 @@ export const fetchUserClasses = (id: string) => {
 };
 
 export const fetchCoursesAndSemesters = () => {
-  return fetcher({ url: `${process.env.NEXTAUTH_URL}/api/classes` });
+  return fetcher({ url: `/api/classes` });
 };
 
 export const fetchSavedPost = (id: string) => {

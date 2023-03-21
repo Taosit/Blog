@@ -1,9 +1,8 @@
-import { fetchCoursesAndSemesters } from "@/lib/api";
+import { getCoursesAndSemesters } from "@/lib/dbActions";
 import React, { Suspense } from "react";
 import styles from "./WelcomeSidebar.module.css";
 
 export const WelcomeSidebar = () => {
-  const getFilters = fetchCoursesAndSemesters();
   const websiteName = "[Name]";
   return (
     <aside className={styles.container}>
@@ -16,15 +15,16 @@ export const WelcomeSidebar = () => {
         <h3>Courses currently using {websiteName}:</h3>
         <Suspense fallback={<div>Loading...</div>}>
           {/* @ts-expect-error Server Component */}
-          <Courses getFilters={getFilters} />
+          <Courses />
         </Suspense>
       </div>
     </aside>
   );
 };
 
-async function Courses({ getFilters }: { getFilters: Promise<any> }) {
-  const { courses } = await getFilters;
+async function Courses() {
+  const { courses } = await getCoursesAndSemesters();
+
   return (
     <ul>
       {courses.map((course: string) => (

@@ -4,7 +4,7 @@ import { HomeTopBar } from "@/components/organisms/homeTopBar/HomeTopBar";
 import React, { Suspense } from "react";
 import { blogs } from "@/seeds/blogs";
 import { blogType } from "@/types/types";
-import { fetchCoursesAndSemesters, fetchSavedPost } from "@/lib/api";
+import { getCoursesAndSemesters } from "@/lib/dbActions";
 
 type searchParamsProps = {
   searchParams: {
@@ -17,7 +17,7 @@ type searchParamsProps = {
 const Blogs = async ({ searchParams }: searchParamsProps) => {
   console.log(searchParams);
   const getBlog = (): Promise<blogType[]> => new Promise((res) => res(blogs));
-  const getFilters = fetchCoursesAndSemesters();
+  const getFilters = getCoursesAndSemesters();
   return (
     <>
       <HomeTopBar />
