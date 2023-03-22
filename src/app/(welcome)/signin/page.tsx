@@ -24,7 +24,7 @@ const Signin = () => {
 
   const signinOptions = {
     redirect: true,
-    callbackUrl: searchParams?.get("callbackUrl") || "/blogs",
+    callbackUrl: searchParams?.get("callbackUrl") || "/",
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

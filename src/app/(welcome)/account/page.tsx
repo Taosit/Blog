@@ -11,7 +11,6 @@ import { StudentAccountFields } from "@/components/organisms/studentAccountField
 import { ProfessorAccountFields } from "@/components/organisms/professorAccountFields/ProfessorAccountFields";
 import { useSession } from "next-auth/react";
 import { updateUser, updateUserImage } from "@/lib/api";
-import { useProtectAccountPage } from "@/hooks/useProtectAccountPage";
 import ProtectedRoute from "@/components/atoms/protectedRoute/ProtectedRoute";
 
 const Account = () => {
@@ -31,7 +30,6 @@ const Account = () => {
   const session = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
-  useProtectAccountPage();
 
   const formRef = useRef<HTMLFormElement>(null);
 
