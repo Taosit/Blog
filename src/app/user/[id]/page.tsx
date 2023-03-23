@@ -26,7 +26,6 @@ const getUser = async (id: string) => {
   if (!user) {
     notFound();
   }
-  await delay(5000);
   return user;
 };
 
@@ -34,7 +33,7 @@ const getBlog = (): Promise<blogType[]> =>
   new Promise((res) => {
     setTimeout(() => {
       res(blogs);
-    }, 2000);
+    }, 1000);
   });
 
 const Profile = async ({ id }: { id: string }) => {

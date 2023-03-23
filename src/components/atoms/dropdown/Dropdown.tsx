@@ -9,6 +9,7 @@ import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 
 type DropdownProps = {
   items: string[];
+  activeItem?: string;
   onSelectItem: (item: string) => void;
 } & React.HTMLAttributes<HTMLDivElement>;
 
@@ -19,6 +20,7 @@ type Item = {
 
 export const Dropdown = ({
   items: itemStrings,
+  activeItem = "",
   onSelectItem,
   className,
   ...props
@@ -36,6 +38,16 @@ export const Dropdown = ({
       }))
     );
   }, [itemStrings.length]);
+
+  useEffect(() => {
+    if (!activeItem) return;
+    setItems((prev) =>
+      prev.map((item) => ({
+        ...item,
+        selected: item.name === activeItem,
+      }))
+    );
+  }, [activeItem]);
 
   const selectedItem = items.find((item) => item.selected);
   const otherItems = items.filter((item) => !item.selected);
@@ -67,6 +79,7 @@ export const Dropdown = ({
   return (
     <div className={`${styles.container} ${className}`} {...props}>
       <button
+        type="button"
         className={styles.clickable}
         onClick={() => setExpanded((prev) => !prev)}
       >

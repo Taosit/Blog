@@ -3,6 +3,7 @@ import { formatClass, isCourseValid } from "@/lib/helpers";
 import { draftPostType, savedPostType } from "@/types/types";
 import React, { useState } from "react";
 import BlogCover from "../blogCover/BlogCover";
+import Tiptap from "../tipTap/TipTap";
 import styles from "./BlogForm.module.css";
 
 type BlogFormProps = {
@@ -60,6 +61,9 @@ export function BlogForm({ blog, setBlog }: BlogFormProps) {
       </div>
       <div className={styles.row}>
         <BlogCover blog={blog} setBlog={setBlog} />
+      </div>
+      <div className={styles.row}>
+        <Tiptap />
       </div>
     </form>
   );
