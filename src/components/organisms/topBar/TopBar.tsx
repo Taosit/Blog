@@ -6,7 +6,7 @@ import styles from "./TopBar.module.css";
 import { DefaultAvatar } from "@/components/atoms/defaultAvatar/DefaultAvatar";
 import Link from "next/link";
 import doubleLeft from "./double-left.svg";
-import { Class, Post, User } from "@prisma/client";
+import { Class, User } from "@prisma/client";
 import { HslColorType, userFields } from "@/types/types";
 import { cropImageSquare, toColorString } from "@/lib/helpers";
 import ColorPicker from "@/components/atoms/colorPicker/ColorPicker";
@@ -15,14 +15,12 @@ import { useRouter } from "next/navigation";
 
 type UserType = User & {
   classes: Class[];
-  posts: Post[];
 };
 
 type TopBarProps = {
   userPromise: Promise<
     User & {
       classes: Class[];
-      posts: Post[];
     }
   >;
 };

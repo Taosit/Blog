@@ -12,7 +12,6 @@ export const Search = () => {
   const [searchValue, setSearchValue] = useState("");
 
   const search = () => {
-    if (!searchValue) return;
     const params = new URLSearchParams(searchParams as URLSearchParams);
     params.set("search", searchValue);
     router.replace(`${pathname}?${params}`);

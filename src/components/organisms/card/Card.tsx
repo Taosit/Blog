@@ -32,7 +32,6 @@ export const Card = ({
   image,
   color,
   showAuthor = true,
-  ...props
 }: CardProps) => {
   const avatarDiameter = 72;
   const formatDate = (date: string) => {
@@ -43,7 +42,7 @@ export const Card = ({
 
   return (
     <Link href={`/blogs/${id}`}>
-      <article className={styles.card} {...props}>
+      <article className={styles.card}>
         <div className={styles.cardTop}>
           <h4 className={styles.title}>{title}</h4>
           <div className={styles.tagContainer}>

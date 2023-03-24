@@ -100,7 +100,8 @@ const NewBlog = () => {
     if (!content) return;
     const user = session.user as userFields;
     const blogToSave = { ...blog, content };
-    const newPost = await publishBlog(user.id, blogToSave);
+    await publishBlog(user.id, blogToSave);
+    router.refresh();
     router.push(`/user/${user.id}`);
   };
 

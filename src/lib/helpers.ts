@@ -171,7 +171,11 @@ export async function cropImageSquare(
   return croppedCanvas.toDataURL();
 }
 
-export async function cropImageRectangle(imageUrl: string): Promise<string> {
+export async function cropImageRectangle(
+  imageUrl: string,
+  width: number = 1000,
+  height: number = 200
+): Promise<string> {
   const img = new Image();
   img.src = imageUrl;
   await new Promise((resolve) => {
@@ -181,16 +185,22 @@ export async function cropImageRectangle(imageUrl: string): Promise<string> {
   });
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
-  const scale = Math.min(1000 / img.width, 200 / img.height);
-  canvas.width = img.width * scale;
-  canvas.height = img.height * scale;
-  ctx!.drawImage(img, 0, 0, canvas.width, canvas.height);
-  const croppedCanvas = document.createElement("canvas");
-  const croppedCtx = croppedCanvas.getContext("2d");
-  croppedCanvas.width = 1000;
-  croppedCanvas.height = 200;
-  const x = (canvas.width - 1000) / 2;
-  const y = (canvas.height - 200) / 2;
-  croppedCtx!.drawImage(canvas, x, y, 1000, 200, 0, 0, 1000, 200);
-  return croppedCanvas.toDataURL();
+  const aspectRatio = width / height;
+  const imgAspectRatio = img.width / img.height;
+  let x, y, w, h;
+  if (imgAspectRatio > aspectRatio) {
+    h = img.height;
+    w = h * aspectRatio;
+    x = (img.width - w) / 2;
+    y = 0;
+  } else {
+    w = img.width;
+    h = w / aspectRatio;
+    x = 0;
+    y = (img.height - h) / 2;
+  }
+  canvas.width = width;
+  canvas.height = height;
+  ctx!.drawImage(img, x, y, w, h, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL();
 }

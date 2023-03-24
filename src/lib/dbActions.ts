@@ -12,6 +12,7 @@ export const getUser = async (id: string) => {
       classes: true,
     },
   });
+  if (!user) throw new Error("User not found");
   return user;
 };
 
@@ -75,6 +76,83 @@ export const updateSavedPost = async (id: string, post: draftPostType) => {
     update: { classId: corespondingClass.id, ...rest },
   });
   return updatedPost;
+};
+
+type SearchFilters = {
+  search?: string;
+  course?: string;
+  term?: string;
+  sort?: string;
+};
+
+export const getAllPosts = async ({
+  search = "",
+  course = "all courses",
+  term = "all terms",
+  sort = "",
+}: SearchFilters) => {
+  course = course === "all courses" ? "" : course;
+  term = term === "all terms" ? "" : term;
+  const sortValues: { [key: string]: string | object } = {};
+  if (sort === "new") {
+    sortValues["createdAt"] = "desc";
+  }
+  if (sort === "popular") {
+    sortValues["comments"] = {
+      _count: "desc",
+    };
+  }
+  const posts = await client.post.findMany({
+    where: {
+      AND: [
+        {
+          OR: [
+            {
+              title: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+            {
+              author: {
+                name: {
+                  contains: search,
+                  mode: "insensitive",
+                },
+              },
+            },
+          ],
+        },
+        {
+          class: {
+            name: {
+              contains: course,
+              mode: "insensitive",
+            },
+            term: {
+              contains: term,
+              mode: "insensitive",
+            },
+          },
+        },
+      ],
+    },
+    orderBy: sortValues,
+    include: {
+      author: {
+        select: {
+          name: true,
+          image: true,
+          color: true,
+        },
+      },
+    },
+  });
+
+  return posts.map((post) => ({
+    ...post,
+    createdAt: post.createdAt.toISOString(),
+  }));
 };
 
 export const postBlog = async (userId: string, post: savedPostType) => {

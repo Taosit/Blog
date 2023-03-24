@@ -23,7 +23,6 @@ type UserCardProps = {
   userPromise: Promise<
     User & {
       classes: Class[];
-      posts: Post[];
     }
   >;
 };
