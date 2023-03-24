@@ -11,6 +11,7 @@ type DropdownProps = {
   items: string[];
   activeItem?: string;
   onSelectItem: (item: string) => void;
+  hasBorder?: boolean;
 } & React.HTMLAttributes<HTMLDivElement>;
 
 type Item = {
@@ -23,6 +24,7 @@ export const Dropdown = ({
   activeItem = "",
   onSelectItem,
   className,
+  hasBorder = true,
   ...props
 }: DropdownProps) => {
   const [items, setItems] = useState<Item[]>([
@@ -80,7 +82,7 @@ export const Dropdown = ({
     <div className={`${styles.container} ${className}`} {...props}>
       <button
         type="button"
-        className={styles.clickable}
+        className={`${styles.clickable} ${hasBorder ? styles.border : ""}`}
         onClick={() => setExpanded((prev) => !prev)}
       >
         <p>{selectedItem?.name}</p>
@@ -91,7 +93,10 @@ export const Dropdown = ({
         />
       </button>
       {expanded && (
-        <ul ref={dropdownMenu} className={styles.menu}>
+        <ul
+          ref={dropdownMenu}
+          className={`${styles.menu} ${hasBorder ? "" : styles.noTopBorder}`}
+        >
           {otherItems.map((item) => (
             <li
               tabIndex={0}

@@ -1,10 +1,24 @@
-import { blogType } from "@/types/types";
+import { HslColorType } from "@/types/types";
+import { CoverType, Prisma } from "@prisma/client";
 import React from "react";
 import { Card } from "../card/Card";
 import styles from "./BlogCards.module.css";
 
+type userPost = {
+  id: string;
+  title: string;
+  createdAt: string;
+  coverType: CoverType;
+  color: HslColorType;
+  image: string | null;
+  classId: string;
+  tags: string[];
+  content: Prisma.JsonValue;
+  authorId: string;
+};
+
 type BlogCardType = {
-  promise: Promise<blogType[]>;
+  promise: Promise<userPost[]>;
   showAuthor?: boolean;
 };
 

@@ -63,4 +63,7 @@
   border-bottom-right-radius: 8px;
   border-bottom-left-radius: 8px;
   position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }

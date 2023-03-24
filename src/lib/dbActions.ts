@@ -41,12 +41,11 @@ export const deleteSavedPost = async (id: string) => {
   });
 };
 
-export const updateSavedPost = async (id: string, post: draftPostType) => {
-  const { class: className, ...rest } = post;
-  const corespondingClass = await client.class.findUnique({
+const getClassByName = async (name: string) => {
+  return await client.class.findUnique({
     where: {
       courseIdentifier: {
-        name: className.toLowerCase(),
+        name: name.toLowerCase(),
         term: getTerm(),
       },
     },
@@ -56,6 +55,11 @@ export const updateSavedPost = async (id: string, post: draftPostType) => {
       users: { select: { id: true } },
     },
   });
+};
+
+export const updateSavedPost = async (id: string, post: draftPostType) => {
+  const { class: className, ...rest } = post;
+  const corespondingClass = await getClassByName(className);
   if (!corespondingClass) throw new Error("Class not found");
   const userIsInClass = corespondingClass.users.some((user) => user.id === id);
   if (!userIsInClass) throw new Error("User is not in class");
@@ -71,6 +75,24 @@ export const updateSavedPost = async (id: string, post: draftPostType) => {
     update: { classId: corespondingClass.id, ...rest },
   });
   return updatedPost;
+};
+
+export const postBlog = async (userId: string, post: savedPostType) => {
+  const { class: className, ...rest } = post;
+  const corespondingClass = await getClassByName(className);
+  if (!corespondingClass) throw new Error("Class not found");
+  const userIsInClass = corespondingClass.users.some(
+    (user) => user.id === userId
+  );
+  if (!userIsInClass) throw new Error("User is not in class");
+  const newPost = await client.post.create({
+    data: {
+      authorId: userId,
+      classId: corespondingClass.id,
+      ...rest,
+    },
+  });
+  return newPost;
 };
 
 export const updateBasicUserInfo = async (
@@ -113,6 +135,28 @@ export const getUserClasses = async (userId: string) => {
     },
   });
   return user?.classes;
+};
+
+export const getUserPosts = async (userId: string) => {
+  const posts = await client.post.findMany({
+    where: {
+      authorId: userId,
+    },
+    include: {
+      author: {
+        select: {
+          name: true,
+          image: true,
+          color: true,
+        },
+      },
+    },
+  });
+
+  return posts.map((post) => ({
+    ...post,
+    createdAt: post.createdAt.toISOString(),
+  }));
 };
 
 export const updateAvatar = async (userId: string, avatar: string) => {

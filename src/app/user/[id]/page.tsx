@@ -10,6 +10,7 @@ import styles from "./Profile.module.css";
 import { notFound } from "next/navigation";
 import ProtectedRoute from "@/components/atoms/protectedRoute/ProtectedRoute";
 import { CardLoader } from "@/components/organisms/cardLoader/CardLoader";
+import { getUserPosts } from "@/lib/dbActions";
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
@@ -29,29 +30,27 @@ const getUser = async (id: string) => {
   return user;
 };
 
-const getBlog = (): Promise<blogType[]> =>
-  new Promise((res) => {
-    setTimeout(() => {
-      res(blogs);
-    }, 1000);
-  });
+const getBlog = async (id: string) => {
+  return getUserPosts(id);
+};
 
 const Profile = async ({ id }: { id: string }) => {
   const userPromise = getUser(id);
+  const blogPromise = getBlog(id);
 
   return (
-    <div>
+    <div className={styles.container}>
       <TopBar userPromise={userPromise} />
       <div className={styles.row}>
         <UserCard userPromise={userPromise} />
         <Suspense fallback={<LoadingStats />}>
           {/* @ts-expect-error Server Component */}
-          <BlogStats postsPromise={getBlog()} />
+          <BlogStats postsPromise={blogPromise} />
         </Suspense>
       </div>
       <Suspense fallback={<LoadingCards />}>
         {/* @ts-expect-error Server Component */}
-        <BlogCards promise={getBlog()} showAuthor={false} />
+        <BlogCards promise={blogPromise} showAuthor={false} />
       </Suspense>
     </div>
   );

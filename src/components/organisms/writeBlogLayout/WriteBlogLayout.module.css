@@ -9,7 +9,7 @@
 
 .page {
   position: relative;
-  width: 90%;
+  width: 95%;
   display: flex;
   margin: 1.5rem auto;
   max-width: var(--max-width);

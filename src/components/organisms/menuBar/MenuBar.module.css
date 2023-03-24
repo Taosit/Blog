@@ -3,18 +3,33 @@
   flex-wrap: wrap;
   gap: 0.5rem 1rem;
   width: 100%;
-  padding: 0 20px;
   background-color: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border: 2px solid var(--gray-light);
+  border-bottom: none;
+  border-top-right-radius: 4px;
+  border-top-left-radius: 4px;
   padding: 0.5rem;
 }
 
-.menuBar button {
-  padding: 2px 6px;
+.buttonGroup {
+  display: flex;
+  gap: 4px;
+}
+
+.menuBar button,
+.menuBar label {
+  padding: 4px;
   border-radius: 2px;
   background-color: var(--gray-light);
+  cursor: pointer;
 }
 
 button.isActive {
   background-color: var(--variant-light);
+}
+
+@media (min-width: 725px) {
+  .menuBar {
+    justify-content: space-around;
+  }
 }

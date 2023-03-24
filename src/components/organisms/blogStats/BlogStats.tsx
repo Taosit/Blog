@@ -14,6 +14,17 @@ type BlogStatsType = {
 
 export default async function BlogStats({ postsPromise }: BlogStatsType) {
   const posts = await postsPromise;
+  const postsThisTerm = posts
+    .map((post) => {
+      return {
+        ...post,
+        createdAt: new Date(post.createdAt),
+      };
+    })
+    .filter((post) => {
+      return getTerm(post.createdAt) === getTerm();
+    });
+
   return (
     <div className={styles.container}>
       <Link href="/blogs/new" className={styles.buttonLink}>
@@ -21,7 +32,7 @@ export default async function BlogStats({ postsPromise }: BlogStatsType) {
       </Link>
       <div className={styles.statsContainer}>
         <div className={styles.stat}>
-          <span className={styles.number}>{posts.length}</span>
+          <span className={styles.number}>{postsThisTerm.length}</span>
           <span className={styles.statText}>Posts in {getTerm()}</span>
         </div>
         <div className={styles.stat}>

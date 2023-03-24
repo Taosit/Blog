@@ -1,21 +1,33 @@
-.button {
-  padding: 2px 6px;
-  border-radius: 2px;
-  background-color: var(--gray-light);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .button.isActive {
   background-color: var(--variant-light);
 }
 
 .button svg {
-  width: 30px;
-  height: 30px;
+  width: 20px;
+  height: 20px;
 }
 
 .icon {
   fill: var(--variant-dark);
+}
+
+.input[type="file"] {
+  display: none;
+}
+
+.levelDropdown {
+  width: 108px;
+}
+
+@media (min-width: 500px) {
+  .button svg {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+@media (min-width: 685px) {
+  .levelDropdown {
+    width: 134px;
+  }
 }

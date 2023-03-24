@@ -87,3 +87,19 @@ export const savePost = (userId: string, post: draftPostType | null) => {
     body: { userId, post },
   });
 };
+
+export const publishBlog = (userId: string, post: savedPostType) => {
+  return fetcher({
+    url: `/api/posts`,
+    method: "POST",
+    body: { userId, post },
+  });
+};
+
+export const getImageUrl = (image: string) => {
+  return fetcher({
+    url: `/api/image`,
+    method: "POST",
+    body: { image },
+  });
+};

@@ -34,7 +34,7 @@ export type coverType = "COLOR" | "IMAGE";
 
 export type savedPostType = {
   title: string;
-  class?: Class | null;
+  class: string;
   tags: string[];
   coverType: "COLOR" | "IMAGE";
   color?: HslColorType;
@@ -43,12 +43,13 @@ export type savedPostType = {
 };
 
 export type draftPostType = {
+  title: string;
   class: string;
   tags: string[];
   coverType: "COLOR" | "IMAGE";
   color?: HslColorType;
   image?: string;
-  content: object;
+  content?: object;
 };
 
 export type blogType = {
@@ -61,6 +62,7 @@ export type blogType = {
     color: HslColorType;
   };
   date: string;
+  coverType: "COLOR" | "IMAGE";
   image: string;
   color: HslColorType;
 };

@@ -7,7 +7,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 2px solid var(--variant-light);
   border-radius: 4px;
   background-color: white;
   padding: 4px;
@@ -15,6 +14,10 @@
   flex-grow: 1;
   cursor: pointer;
   min-width: 90px;
+}
+
+.clickable.border {
+  border: 2px solid var(--variant-light);
 }
 
 .clickable p {
@@ -36,6 +39,10 @@
   border-bottom-right-radius: 4px;
   padding: 4px 0;
   z-index: 1;
+}
+
+.noTopBorder {
+  border-top: none;
 }
 
 .menuItem {

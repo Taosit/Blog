@@ -103,10 +103,9 @@ export const isUserUpdateSubmissionInvalid = (data: userUpdateFields) => {
   );
 };
 
-export const getTerm = () => {
-  const today = new Date();
-  const term = today.getMonth() < 4 ? "W2" : today.getMonth() < 8 ? "W1" : "S";
-  const year = term === "W2" ? today.getFullYear() - 1 : today.getFullYear();
+export const getTerm = (date = new Date()) => {
+  const term = date.getMonth() < 4 ? "W2" : date.getMonth() < 8 ? "W1" : "S";
+  const year = term === "W2" ? date.getFullYear() - 1 : date.getFullYear();
   return `${year}${term}`;
 };
 
@@ -124,6 +123,26 @@ export const toColorString = (color: HslColorType) => {
 export const darkenColor = (color: HslColorType) => {
   return { ...color, l: Math.max(20, color.l - 50) };
 };
+
+export async function cropImage(
+  imageUrl: string,
+  targetWidth: number = 500
+): Promise<string> {
+  const img = new Image();
+  img.src = imageUrl;
+  await new Promise((resolve) => {
+    img.onload = () => {
+      resolve(null);
+    };
+  });
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  const scale = targetWidth / img.width;
+  canvas.width = img.width * scale;
+  canvas.height = img.height * scale;
+  ctx!.drawImage(img, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL();
+}
 
 export async function cropImageSquare(
   imageUrl: string,

@@ -4,73 +4,86 @@ import Image from "next/image";
 import styles from "./Card.module.css";
 import { darkenColor, toColorString } from "@/lib/helpers";
 import { HslColorType } from "@/types/types";
+import Link from "next/link";
 
 type CardProps = {
+  id: string;
   title: string;
   tags: string[];
   author?: {
     name: string;
-    avatar: string;
+    image: string;
     color: HslColorType;
   };
-  date: string;
-  image: string;
+  createdAt: string;
+  coverType: "COLOR" | "IMAGE";
+  image: string | null;
   color: HslColorType;
   showAuthor: boolean;
 };
 
 export const Card = ({
+  id,
   title,
   tags,
   author,
-  date,
+  createdAt,
+  coverType,
   image,
   color,
   showAuthor = true,
   ...props
 }: CardProps) => {
   const avatarDiameter = 72;
+  const formatDate = (date: string) => {
+    const dateObj = new Date(date);
+    const dateFormatter = new Intl.DateTimeFormat("en-US");
+    return dateFormatter.format(dateObj);
+  };
+
   return (
-    <article className={styles.card} {...props}>
-      <div className={styles.cardTop}>
-        <h4 className={styles.title}>{title}</h4>
-        <div className={styles.tagContainer}>
-          {tags.map((tag) => (
-            <span key={tag}>{tag}</span>
-          ))}
-        </div>
-        <p className={styles.date}>{date}</p>
-      </div>
-      <div
-        className={styles.cardBottom}
-        style={
-          image
-            ? { backgroundImage: `url(${image})` }
-            : { backgroundColor: toColorString(color) }
-        }
-      >
-        {showAuthor && author && (
-          <div>
-            {author.avatar === "" ? (
-              <DefaultAvatar
-                className={styles.avatar}
-                color={darkenColor(author.color)}
-                height={avatarDiameter}
-                width={avatarDiameter}
-              />
-            ) : (
-              <Image
-                className={styles.avatar}
-                src={author.avatar}
-                height={avatarDiameter}
-                width={avatarDiameter}
-                alt="avatar"
-              />
-            )}
-            <p className={styles.author}>{author.name}</p>
+    <Link href={`/blogs/${id}`}>
+      <article className={styles.card} {...props}>
+        <div className={styles.cardTop}>
+          <h4 className={styles.title}>{title}</h4>
+          <div className={styles.tagContainer}>
+            {tags.map((tag) => (
+              <span key={tag}>{tag}</span>
+            ))}
           </div>
-        )}
-      </div>
-    </article>
+          <p className={styles.date}>{formatDate(createdAt)}</p>
+        </div>
+        <div
+          className={styles.cardBottom}
+          style={
+            coverType === "IMAGE" && image
+              ? { backgroundImage: `url(${image})` }
+              : { backgroundColor: toColorString(color) }
+          }
+        >
+          {showAuthor && author && (
+            <div>
+              {author.image === "" ? (
+                <DefaultAvatar
+                  className={styles.avatar}
+                  color={darkenColor(author.color)}
+                  height={avatarDiameter}
+                  width={avatarDiameter}
+                />
+              ) : (
+                <Image
+                  className={styles.avatar}
+                  src={author.image}
+                  height={avatarDiameter}
+                  width={avatarDiameter}
+                  alt="avatar"
+                />
+              )}
+              <p className={styles.author}>{author.name}</p>
+            </div>
+          )}
+        </div>
+      </article>
+    </Link>
   );
 };
