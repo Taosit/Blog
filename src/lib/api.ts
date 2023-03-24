@@ -58,7 +58,7 @@ export const updateUserColor = (data: {
 
 export const updateUserImage = (data: { image: string; userId: string }) => {
   return fetcher({
-    url: `/api/avatar`,
+    url: `/api/users/${data.userId}/avatar`,
     method: "PUT",
     body: data,
   });

@@ -1,5 +1,5 @@
 .container {
-  background: url("polson.jpeg");
+  background: white;
   background-position: center;
   background-size: cover;
   background-blend-mode: multiply;
@@ -17,6 +17,24 @@
   background-image: linear-gradient(#bca0ed, #e1d6f4);
   opacity: 0.7;
   z-index: -1;
+}
+
+@media (max-width: 480px) {
+  .container {
+    background-image: url(polson-mobile.jpeg);
+  }
+}
+
+@media (min-width: 481px) and (max-width: 1024px) {
+  .container {
+    background-image: url(polson-tablet.jpeg);
+  }
+}
+
+@media (min-width: 1025px) {
+  .container {
+    background-image: url(polson-desktop.jpeg);
+  }
 }
 
 @media (min-width: 500px) {
