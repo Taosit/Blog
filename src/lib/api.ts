@@ -80,6 +80,10 @@ export const fetchSavedPost = (id: string) => {
   return fetcher({ url: `/api/savedPost/${id}` });
 };
 
+export const fetchPost = (id: string) => {
+  return fetcher({ url: `/api/posts/${id}` });
+};
+
 export const savePost = (userId: string, post: draftPostType | null) => {
   return fetcher({
     url: `/api/savedPost`,
@@ -93,6 +97,14 @@ export const publishBlog = (userId: string, post: savedPostType) => {
     url: `/api/posts`,
     method: "POST",
     body: { userId, post },
+  });
+};
+
+export const updateBlog = (id: string, post: savedPostType) => {
+  return fetcher({
+    url: `/api/posts/${id}`,
+    method: "PUT",
+    body: { post },
   });
 };
 

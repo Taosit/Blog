@@ -16,6 +16,55 @@ export const getUser = async (id: string) => {
   return user;
 };
 
+export const getPost = async (id: string) => {
+  const post = await client.post.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      author: {
+        select: {
+          name: true,
+          image: true,
+          color: true,
+        },
+      },
+      comments: true,
+      class: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+  if (!post) throw new Error("Post not found");
+  return { ...post, createdAt: post.createdAt.toISOString() };
+};
+
+export const updatePost = async (
+  postId: string,
+  userId: string,
+  post: savedPostType
+) => {
+  const { class: className, ...rest } = post;
+  const corespondingClass = await getClassByName(className);
+  if (!corespondingClass) throw new Error("Class not found");
+  const userIsInClass = corespondingClass.users.some(
+    (user) => user.id === userId
+  );
+  if (!userIsInClass) throw new Error("User is not in class");
+  const updatedPost = await client.post.update({
+    where: {
+      id: postId,
+    },
+    data: {
+      classId: corespondingClass.id,
+      ...rest,
+    },
+  });
+  return updatedPost;
+};
+
 export const getSavedPost = async (id: string) => {
   const post = await client.savedPost.findUnique({
     where: {
@@ -70,6 +119,7 @@ export const updateSavedPost = async (id: string, post: draftPostType) => {
     },
     create: {
       userId: id,
+      content: rest.content as Prisma.InputJsonValue,
       classId: corespondingClass.id,
       ...rest,
     },
@@ -165,8 +215,8 @@ export const postBlog = async (userId: string, post: savedPostType) => {
   if (!userIsInClass) throw new Error("User is not in class");
   const newPost = await client.post.create({
     data: {
-      authorId: userId,
       classId: corespondingClass.id,
+      content: rest.content as Prisma.JsonObject,
       ...rest,
     },
   });

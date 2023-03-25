@@ -1,7 +1,16 @@
+import BlogHeader from "@/components/organisms/blogHeader/BlogHeader";
+import { getPost } from "@/lib/dbActions";
 import React from "react";
 
-const Blog = ({ params }: { params: { id: string } }) => {
-  return <div>Blog {params.id}</div>;
+const Blog = async ({ params }: { params: { id: string } }) => {
+  const postId = params.id;
+  const postPromise = getPost(postId);
+
+  return (
+    <div>
+      <BlogHeader postPromise={postPromise} />
+    </div>
+  );
 };
 
 export default Blog;

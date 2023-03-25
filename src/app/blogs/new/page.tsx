@@ -28,7 +28,6 @@ const NewBlog = () => {
     color: { h: 170, s: 80, l: 80 },
     image: "",
     tags: [],
-    // content: {},
   };
 
   const [blog, setBlog] = useState<draftPostType>(initialBlog);

@@ -39,7 +39,8 @@ export type savedPostType = {
   coverType: "COLOR" | "IMAGE";
   color?: HslColorType;
   image?: string;
-  content: object;
+  content?: object;
+  authorId: string;
 };
 
 export type draftPostType = {
