@@ -1,8 +1,69 @@
 .container {
   height: var(--topbar-height);
   display: flex;
+  position: relative;
   flex-direction: column;
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+  margin-bottom: 2rem;
+}
+
+.container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 4px;
+}
+
+.content {
+  z-index: 1;
+  width: 90%;
+  margin: 0 auto;
+  max-width: var(--max-width);
+  position: relative;
+  height: 100%;
+}
+
+.backLink {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+  font-weight: 600;
+}
+
+.backLink p {
+  color: var(--text-light);
+}
+
+.title {
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.bottomRightContainer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.controls a {
+  text-decoration: none;
+}
+
+.date {
+  position: absolute;
+  bottom: -2rem;
+  right: 0;
+  color: var(--text-light);
 }

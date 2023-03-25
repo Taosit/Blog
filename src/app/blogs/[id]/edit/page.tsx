@@ -3,12 +3,7 @@
 import { Button } from "@/components/atoms/button/Button";
 import { BlogForm } from "@/components/organisms/blogForm/BlogForm";
 import { fetchPost, updateBlog } from "@/lib/api";
-import {
-  coverType,
-  draftPostType,
-  savedPostType,
-  userFields,
-} from "@/types/types";
+import { coverType, draftPostType, userFields } from "@/types/types";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import Youtube from "@tiptap/extension-youtube";
@@ -84,7 +79,6 @@ const EditBlog = ({ params }: { params: { id: string } }) => {
         }
       }
     });
-    // [session, editor?.getJSON().type]
   }, [editor?.getJSON().type, params.id, session, user?.id]);
 
   const save = async () => {

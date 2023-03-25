@@ -65,6 +65,22 @@ export const updatePost = async (
   return updatedPost;
 };
 
+export const removePost = async (postId: string, userId: string) => {
+  const postToDelete = await client.post.findUnique({
+    where: {
+      id: postId,
+    },
+  });
+  if (!postToDelete) return;
+  if (postToDelete.authorId !== userId) throw new Error("User is not author");
+  const deleted = await client.post.delete({
+    where: {
+      id: postId,
+    },
+  });
+  return deleted;
+};
+
 export const getSavedPost = async (id: string) => {
   const post = await client.savedPost.findUnique({
     where: {
@@ -206,7 +222,7 @@ export const getAllPosts = async ({
 };
 
 export const postBlog = async (userId: string, post: savedPostType) => {
-  const { class: className, ...rest } = post;
+  const { class: className, authorId, ...rest } = post;
   const corespondingClass = await getClassByName(className);
   if (!corespondingClass) throw new Error("Class not found");
   const userIsInClass = corespondingClass.users.some(
@@ -215,7 +231,16 @@ export const postBlog = async (userId: string, post: savedPostType) => {
   if (!userIsInClass) throw new Error("User is not in class");
   const newPost = await client.post.create({
     data: {
-      classId: corespondingClass.id,
+      class: {
+        connect: {
+          id: corespondingClass.id,
+        },
+      },
+      author: {
+        connect: {
+          id: userId,
+        },
+      },
       content: rest.content as Prisma.JsonObject,
       ...rest,
     },

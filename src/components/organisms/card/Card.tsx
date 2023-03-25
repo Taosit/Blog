@@ -2,7 +2,7 @@ import React from "react";
 import { DefaultAvatar } from "@/components/atoms/defaultAvatar/DefaultAvatar";
 import Image from "next/image";
 import styles from "./Card.module.css";
-import { darkenColor, toColorString } from "@/lib/helpers";
+import { darkenColor, formatDate, toColorString } from "@/lib/helpers";
 import { HslColorType } from "@/types/types";
 import Link from "next/link";
 
@@ -34,11 +34,6 @@ export const Card = ({
   showAuthor = true,
 }: CardProps) => {
   const avatarDiameter = 72;
-  const formatDate = (date: string) => {
-    const dateObj = new Date(date);
-    const dateFormatter = new Intl.DateTimeFormat("en-US");
-    return dateFormatter.format(dateObj);
-  };
 
   return (
     <Link href={`/blogs/${id}`}>

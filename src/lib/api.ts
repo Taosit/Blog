@@ -108,6 +108,13 @@ export const updateBlog = (id: string, post: savedPostType) => {
   });
 };
 
+export const deleteBlog = (id: string) => {
+  return fetcher({
+    url: `/api/posts/${id}`,
+    method: "DELETE",
+  });
+};
+
 export const getImageUrl = (image: string) => {
   return fetcher({
     url: `/api/image`,

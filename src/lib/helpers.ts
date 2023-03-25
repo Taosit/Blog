@@ -124,6 +124,12 @@ export const darkenColor = (color: HslColorType) => {
   return { ...color, l: Math.max(20, color.l - 50) };
 };
 
+export const formatDate = (date: string) => {
+  const dateObj = new Date(date);
+  const dateFormatter = new Intl.DateTimeFormat("en-US");
+  return dateFormatter.format(dateObj);
+};
+
 export async function cropImage(
   imageUrl: string,
   targetWidth: number = 500

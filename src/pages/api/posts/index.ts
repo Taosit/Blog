@@ -6,7 +6,7 @@ import { authOptions } from "../auth/[...nextauth]";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
-  if (!session) return res.status(401);
+  if (!session) return res.status(401).json({ error: "Unauthorized" });
   const { userId, post } = req.body;
   if (userId !== session.user.id) return res.status(403);
   if (req.method !== "POST") return res.status(405);

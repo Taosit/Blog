@@ -1,25 +1,28 @@
 "use client";
 
-import { toColorString } from "@/lib/helpers";
+import { formatDate, toColorString } from "@/lib/helpers";
 import { HslColorType, userFields } from "@/types/types";
 import { Post, User } from "@prisma/client";
 import { useSession } from "next-auth/react";
+import doubleLeft from "./double-left.svg";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import styles from "./BlogHeader.module.css";
+import { deleteBlog } from "@/lib/api";
 
 type PostType = Post & {
   author: User;
 };
 
-export default function BlogHeader({
-  postPromise,
-}: {
+type HeaderProps = {
   postPromise: Promise<any>;
-}) {
+};
+
+export default function BlogHeader({ postPromise }: HeaderProps) {
   const router = useRouter();
-  const [post, setPost] = useState<Partial<PostType>>({});
+  const [post, setPost] = useState<Partial<any>>({});
 
   const { data, status } = useSession();
   useEffect(() => {
@@ -43,18 +46,35 @@ export default function BlogHeader({
       }),
   };
 
+  const deletePost = async () => {
+    if (!user?.id) return;
+    const deleted = await deleteBlog(post.id);
+    if (deleted) {
+      router.push(`/user/${user.id}`);
+      router.refresh();
+    }
+  };
+
   return (
     <div style={style} className={styles.container}>
-      <button onClick={() => router.back()}>Back</button>
-      {post.title && <h1>{post.title}</h1>}
-      <div>
-        {isAuthor ? (
-          <div>
-            <Link href={`/blogs/${post.id}/edit`}>Edit</Link>
-            <button>Delete</button>
-          </div>
-        ) : (
-          post.author && <div>{post.author.name}</div>
+      <div className={styles.content}>
+        <button className={styles.backLink} onClick={() => router.back()}>
+          <Image src={doubleLeft} alt="" />
+          <p>Back</p>
+        </button>
+        {post.title && <h1 className={styles.title}>{post.title}</h1>}
+        <div className={styles.bottomRightContainer}>
+          {isAuthor ? (
+            <div className={styles.controls}>
+              <Link href={`/blogs/${post.id}/edit`}>Edit</Link>
+              <button onClick={deletePost}>Delete</button>
+            </div>
+          ) : (
+            post.author && <div>{post.author.name}</div>
+          )}
+        </div>
+        {post.createdAt && (
+          <p className={styles.date}>{formatDate(post.createdAt)}</p>
         )}
       </div>
     </div>
