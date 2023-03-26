@@ -5,7 +5,6 @@ import TopBar from "@/components/organisms/topBar/TopBar";
 import React, { Suspense } from "react";
 import styles from "./Profile.module.css";
 import ProtectedRoute from "@/components/atoms/protectedRoute/ProtectedRoute";
-import { CardLoader } from "@/components/organisms/cardLoader/CardLoader";
 import { getUser, getUserPosts } from "@/lib/dbActions";
 
 const Profile = ({ id }: { id: string }) => {
@@ -22,22 +21,10 @@ const Profile = ({ id }: { id: string }) => {
           <BlogStats postsPromise={blogPromise} />
         </Suspense>
       </div>
-      <Suspense fallback={<LoadingCards />}>
-        <BlogCards searchParams={{ userId: id }} showAuthor={false} />
-      </Suspense>
+      <BlogCards searchParams={{ userId: id }} showAuthor={false} />
     </div>
   );
 };
-
-function LoadingCards() {
-  return (
-    <div className={styles.cardsContainer}>
-      {[...Array(6)].map((_, i) => (
-        <CardLoader key={i} />
-      ))}
-    </div>
-  );
-}
 
 function LoadingStats() {
   return (

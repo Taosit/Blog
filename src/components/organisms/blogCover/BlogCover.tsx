@@ -4,7 +4,7 @@ import ColorPicker from "@/components/atoms/colorPicker/ColorPicker";
 import { Radio } from "@/components/atoms/radio/Radio";
 import { cropImageRectangle, toColorString } from "@/lib/helpers";
 import { draftPostType } from "@/types/types";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef } from "react";
 import styles from "./BlogCover.module.css";
 
 type BlogCoverProps = {
@@ -41,10 +41,6 @@ export default function BlogCover({ blog, setBlog }: BlogCoverProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
-
-  // useEffect(() => {
-  //   console.log({ blog });
-  // }, [blog]);
 
   return (
     <div className={styles.container}>
