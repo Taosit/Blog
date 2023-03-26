@@ -149,6 +149,7 @@ type SearchFilters = {
   course?: string;
   term?: string;
   sort?: string;
+  userId?: string;
 };
 
 export const getAllPosts = async ({
@@ -156,6 +157,7 @@ export const getAllPosts = async ({
   course = "all courses",
   term = "all terms",
   sort = "",
+  userId = "",
 }: SearchFilters) => {
   course = course === "all courses" ? "" : course;
   term = term === "all terms" ? "" : term;
@@ -173,6 +175,7 @@ export const getAllPosts = async ({
       AND: [
         {
           OR: [
+            { author: { id: userId } },
             {
               title: {
                 contains: search,

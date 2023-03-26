@@ -1,10 +1,14 @@
 import { uploadToCloudinary } from "@/lib/cloudinary";
-import { deleteSavedPost, postBlog } from "@/lib/dbActions";
+import { deleteSavedPost, getAllPosts, postBlog } from "@/lib/dbActions";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  if (req.method === "GET") {
+    const posts = await getAllPosts(req.query);
+    return res.status(200).json({ data: posts });
+  }
   const session = await getServerSession(req, res, authOptions);
   if (!session) return res.status(401).json({ error: "Unauthorized" });
   const { userId, post } = req.body;
@@ -17,11 +21,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const image = await uploadToCloudinary(post.image);
     post.image = image.secure_url;
   }
-  const newPost = await postBlog(userId, post).catch((err) => {
-    return res.status(500).json({ error: err.message });
-  });
-  await deleteSavedPost(userId);
-  return res.status(200).json({ data: newPost });
+  postBlog(userId, post)
+    .then((newPost) => {
+      deleteSavedPost(userId);
+      return res.status(200).json({ data: newPost });
+    })
+    .catch((err) => {
+      console.error(err);
+      return res.status(500).json({ error: err.message });
+    });
 };
 
 export default handler;

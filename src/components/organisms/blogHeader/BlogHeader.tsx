@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import styles from "./BlogHeader.module.css";
 import { deleteBlog } from "@/lib/api";
+import { DefaultAvatar } from "@/components/atoms/defaultAvatar/DefaultAvatar";
 
 type PostType = Post & {
   author: User;
@@ -70,7 +71,25 @@ export default function BlogHeader({ postPromise }: HeaderProps) {
               <button onClick={deletePost}>Delete</button>
             </div>
           ) : (
-            post.author && <div>{post.author.name}</div>
+            post.author && (
+              <div className={styles.authorContainer}>
+                {post.author.image ? (
+                  <Image
+                    src={post.author.image}
+                    className={styles.avatar}
+                    height={40}
+                    width={40}
+                    alt="avatar"
+                  />
+                ) : (
+                  <DefaultAvatar
+                    color={post.author.color}
+                    className={styles.avatar}
+                  />
+                )}
+                <p>{post.author.name}</p>
+              </div>
+            )
           )}
         </div>
         {post.createdAt && (

@@ -15,10 +15,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(200).json({ data: user });
   }
   if (req.method !== "PUT") return res.status(405);
-
   const { firstName, lastName, role, studentNumber, courses, color } =
     req.body as userUpdateFields;
-  if (isUserUpdateSubmissionInvalid(req.body)) return res.status(400);
+  if (isUserUpdateSubmissionInvalid(req.body))
+    return res.status(400).json({ error: "Invalid submission" });
   const userId = req.query.id as string;
   const user = await updateBasicUserInfo(
     userId,
@@ -27,7 +27,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     studentNumber,
     color
   );
-  // if (color) await updateColor(userId, color);
   await updateStudentCourses(userId, courses);
 
   res.status(200).json({ user: { ...user, courses } });

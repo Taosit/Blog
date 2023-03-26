@@ -80,6 +80,18 @@ export const fetchSavedPost = (id: string) => {
   return fetcher({ url: `/api/savedPost/${id}` });
 };
 
+type SearchParamsType = {
+  search?: string;
+  course?: string;
+  term?: string;
+  sort?: string;
+};
+
+export const fetchPosts = (searchParams: SearchParamsType) => {
+  const params = new URLSearchParams(searchParams);
+  return fetcher({ url: `/api/posts?${params.toString()}` });
+};
+
 export const fetchPost = (id: string) => {
   return fetcher({ url: `/api/posts/${id}` });
 };

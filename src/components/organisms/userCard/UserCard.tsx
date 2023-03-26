@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import styles from "./UserCard.module.css";
-import { User, Class, Post } from "@prisma/client";
+import { User, Class } from "@prisma/client";
 import { InputGroup } from "@/components/atoms/inputGroup/InputGroup";
 import { formatClass, getNameError, isCourseValid } from "@/lib/helpers";
 import { EditIcon } from "./EditIcon";
@@ -31,15 +31,6 @@ export default function UserCard({ userPromise }: UserCardProps) {
   const router = useRouter();
   const session = useSession();
 
-  useEffect(() => {
-    if (!session.data?.user) return;
-    const user = session.data.user as userFields;
-    if (user.role === "STUDENT" && !user.studentNumber) {
-      router.push("/account");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session]);
-
   const [data, setData] = useState<UserType>({
     firstName: "",
     lastName: "",
@@ -47,7 +38,11 @@ export default function UserCard({ userPromise }: UserCardProps) {
   });
 
   useEffect(() => {
+    if (!session.data?.user) return;
     userPromise.then((user) => {
+      if (user.role === "STUDENT" && !user.studentNumber) {
+        router.push("/account");
+      }
       const courses = user.classes?.map((classObj) =>
         classObj.name.toUpperCase()
       );
@@ -57,7 +52,7 @@ export default function UserCard({ userPromise }: UserCardProps) {
         courses: courses || [],
       });
     });
-  }, [userPromise]);
+  }, [session, userPromise]);
 
   const [isEditing, setIsEditing] = useState(false);
 

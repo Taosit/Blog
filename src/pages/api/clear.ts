@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   await client.savedPost.deleteMany();
+  await client.post.deleteMany();
   await client.user.deleteMany();
   await client.class.deleteMany();
 

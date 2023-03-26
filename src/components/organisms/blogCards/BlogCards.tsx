@@ -1,37 +1,55 @@
+"use client";
+
+import { fetchPosts } from "@/lib/api";
 import { HslColorType } from "@/types/types";
-import { CoverType, Prisma } from "@prisma/client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card } from "../card/Card";
 import styles from "./BlogCards.module.css";
-
-type userPost = {
-  id: string;
-  title: string;
-  createdAt: string;
-  coverType: CoverType;
-  color: HslColorType;
-  image: string | null;
-  classId: string;
-  tags: string[];
-  content: Prisma.JsonValue;
-  authorId: string;
+type SearchParamsType = {
+  search?: string;
+  course?: string;
+  term?: string;
+  sort?: string;
+  userId?: string;
 };
 
 type BlogCardType = {
-  promise: Promise<userPost[]>;
+  searchParams: SearchParamsType;
   showAuthor?: boolean;
 };
 
-export const BlogCards = async ({
-  promise,
+type PostType = {
+  id: string;
+  title: string;
+  tags: string[];
+  author?: {
+    name: string;
+    image: string;
+    color: HslColorType;
+  };
+  createdAt: string;
+  coverType: "COLOR" | "IMAGE";
+  image: string | null;
+  color: HslColorType;
+};
+
+export const BlogCards = ({
+  searchParams = {},
   showAuthor = true,
 }: BlogCardType) => {
-  const blogs = await promise;
+  const [blogs, setBlogs] = useState<PostType[]>([]);
+  useEffect(() => {
+    fetchPosts(searchParams).then((data) => {
+      setBlogs(data);
+    });
+  }, [searchParams]);
+
   return (
     <div className={styles.container}>
-      {blogs.map((blog) => (
-        <Card key={blog.id} showAuthor={showAuthor} {...blog} />
-      ))}
+      {blogs?.[0] &&
+        blogs.map((blog) => (
+          <Card key={blog.id} showAuthor={showAuthor} {...blog} />
+        ))}
     </div>
   );
 };

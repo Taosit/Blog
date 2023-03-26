@@ -23,8 +23,7 @@ const Profile = ({ id }: { id: string }) => {
         </Suspense>
       </div>
       <Suspense fallback={<LoadingCards />}>
-        {/* @ts-expect-error Server Component */}
-        <BlogCards promise={blogPromise} showAuthor={false} />
+        <BlogCards searchParams={{ userId: id }} showAuthor={false} />
       </Suspense>
     </div>
   );

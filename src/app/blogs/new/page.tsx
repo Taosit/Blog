@@ -27,7 +27,7 @@ const NewBlog = () => {
     coverType: "COLOR" as coverType,
     color: { h: 170, s: 80, l: 80 },
     image: "",
-    tags: [],
+    tags: ["Tag"],
   };
 
   const [blog, setBlog] = useState<draftPostType>(initialBlog);
