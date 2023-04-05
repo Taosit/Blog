@@ -1,12 +1,6 @@
 import styles from "./BlogStats.module.css";
-import { Class, Post, User } from "@prisma/client";
 import { getTerm } from "@/lib/helpers";
 import Link from "next/link";
-
-// type UserType = User & {
-//   classes: Class[];
-//   posts: Post[];
-// };
 
 type BlogStatsType = {
   postsPromise: Promise<any[]>;

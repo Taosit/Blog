@@ -251,6 +251,29 @@ export const postBlog = async (userId: string, post: savedPostType) => {
   return newPost;
 };
 
+export const postComment = async (
+  userId: string,
+  postId: string,
+  content: object
+) => {
+  const comment = await client.comment.create({
+    data: {
+      content: content as Prisma.JsonObject,
+      author: {
+        connect: {
+          id: userId,
+        },
+      },
+      post: {
+        connect: {
+          id: postId,
+        },
+      },
+    },
+  });
+  return comment;
+};
+
 export const updateBasicUserInfo = async (
   userId: string,
   name: string,

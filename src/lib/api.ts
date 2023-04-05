@@ -134,3 +134,17 @@ export const getImageUrl = (image: string) => {
     body: { image },
   });
 };
+
+export const getComments = (postId: string) => {
+  return fetcher({
+    url: `/api/posts/${postId}/comments`,
+  });
+};
+
+export const sendComment = (postId: string, comment: object) => {
+  return fetcher({
+    url: `/api/posts/${postId}/comments`,
+    method: "POST",
+    body: { comment },
+  });
+};

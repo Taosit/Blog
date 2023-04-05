@@ -1,0 +1,11 @@
+.container {
+  width: 90%;
+  margin: 0 auto;
+  max-width: var(--max-width);
+  margin-top: 4rem;
+}
+
+.container h2 {
+  font-size: 1.75rem;
+  color: var(--text-light);
+}

@@ -1,12 +1,12 @@
 import { EditorContent, Editor } from "@tiptap/react";
 import { MenuBar } from "../menuBar/MenuBar";
-import styles from "./TipTap.module.css";
+import styles from "./CommentEditor.module.css";
 
-type TipTapProps = {
+type CommentEditorProps = {
   editor: Editor | null;
 };
 
-const Tiptap = ({ editor }: TipTapProps) => {
+const CommentEditor = ({ editor }: CommentEditorProps) => {
   return (
     <div className={styles.container}>
       <MenuBar editor={editor} />
@@ -15,4 +15,4 @@ const Tiptap = ({ editor }: TipTapProps) => {
   );
 };
 
-export default Tiptap;
+export default CommentEditor;

@@ -39,13 +39,13 @@ export const BlogCards = ({
   showAuthor = true,
 }: BlogCardType) => {
   const [blogs, setBlogs] = useState<PostType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     fetchPosts(searchParams).then((data) => {
       setBlogs(data);
+      setIsLoading(false);
     });
   }, [searchParams]);
-
-  const isLoading = !blogs?.[0];
 
   if (isLoading) {
     return <LoadingCards />;

@@ -4,7 +4,7 @@ import { draftPostType } from "@/types/types";
 import { Editor } from "@tiptap/react";
 import React, { useState } from "react";
 import BlogCover from "../blogCover/BlogCover";
-import Tiptap from "../tipTap/TipTap";
+import BlogEditor from "../blogEditor/BlogEditor";
 import styles from "./BlogForm.module.css";
 
 type BlogFormProps = {
@@ -91,7 +91,7 @@ export function BlogForm({ blog, setBlog, editor }: BlogFormProps) {
         />
       </div>
       <BlogCover blog={blog} setBlog={setBlog} />
-      <Tiptap editor={editor} />
+      <BlogEditor editor={editor} />
     </form>
   );
 }

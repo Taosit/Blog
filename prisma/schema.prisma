@@ -115,7 +115,7 @@ model SavedPost {
 
 model Comment {
   id       String @id @default(cuid())
-  content  String
+  content  Json
   author   User   @relation(fields: [authorId], references: [id])
   authorId String
   post     Post   @relation(fields: [postId], references: [id])
