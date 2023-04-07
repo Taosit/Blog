@@ -3,12 +3,9 @@
 import { Button } from "@/components/atoms/button/Button";
 import { BlogForm } from "@/components/organisms/blogForm/BlogForm";
 import { fetchPost, updateBlog } from "@/lib/api";
+import { editorExtensions } from "@/lib/editorConfig";
 import { coverType, draftPostType, userFields } from "@/types/types";
-import Image from "@tiptap/extension-image";
-import Link from "@tiptap/extension-link";
-import Youtube from "@tiptap/extension-youtube";
 import { useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -37,21 +34,7 @@ const EditBlog = ({ params }: { params: { id: string } }) => {
   const user = session?.user as userFields;
 
   const editor = useEditor({
-    extensions: [
-      StarterKit.configure({
-        bulletList: {
-          keepMarks: true,
-          keepAttributes: false,
-        },
-        orderedList: {
-          keepMarks: true,
-          keepAttributes: false,
-        },
-      }),
-      Link,
-      Image,
-      Youtube,
-    ],
+    extensions: editorExtensions,
     content: blog.content || "<p>Start creating your blog ...</p>",
   });
 

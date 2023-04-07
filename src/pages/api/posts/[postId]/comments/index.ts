@@ -1,9 +1,14 @@
-import { getAllPosts, postComment } from "@/lib/dbActions";
+import { getAllPosts, getCommentsForPost, postComment } from "@/lib/dbActions";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  if (req.method === "GET") {
+    const postId = req.query.postId as string;
+    const comments = await getCommentsForPost(postId);
+    return res.status(200).json({ data: comments });
+  }
   const session = await getServerSession(req, res, authOptions);
   if (!session) return res.status(401).json({ error: "Unauthorized" });
   const { comment } = req.body;

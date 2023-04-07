@@ -11,14 +11,11 @@ import {
 import { coverType, draftPostType, userFields } from "@/types/types";
 import { Class } from "@prisma/client";
 import { useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Link from "@tiptap/extension-link";
-import Image from "@tiptap/extension-image";
-import Youtube from "@tiptap/extension-youtube";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import styles from "./NewBlog.module.css";
+import { editorExtensions } from "@/lib/editorConfig";
 
 const NewBlog = () => {
   const initialBlog = {
@@ -40,21 +37,7 @@ const NewBlog = () => {
   });
 
   const editor = useEditor({
-    extensions: [
-      StarterKit.configure({
-        bulletList: {
-          keepMarks: true,
-          keepAttributes: false,
-        },
-        orderedList: {
-          keepMarks: true,
-          keepAttributes: false,
-        },
-      }),
-      Link,
-      Image,
-      Youtube,
-    ],
+    extensions: editorExtensions,
     content: blog.content || "<p>Start creating your blog ...</p>",
   });
 

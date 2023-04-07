@@ -135,7 +135,7 @@ export const getImageUrl = (image: string) => {
   });
 };
 
-export const getComments = (postId: string) => {
+export const fetchComments = (postId: string) => {
   return fetcher({
     url: `/api/posts/${postId}/comments`,
   });
@@ -145,6 +145,25 @@ export const sendComment = (postId: string, comment: object) => {
   return fetcher({
     url: `/api/posts/${postId}/comments`,
     method: "POST",
+    body: { comment },
+  });
+};
+
+export const deleteComment = (postId: string, commentId: string) => {
+  return fetcher({
+    url: `/api/posts/${postId}/comments/${commentId}`,
+    method: "DELETE",
+  });
+};
+
+export const editComment = (
+  postId: string,
+  commentId: string,
+  comment: object
+) => {
+  return fetcher({
+    url: `/api/posts/${postId}/comments/${commentId}`,
+    method: "PUT",
     body: { comment },
   });
 };

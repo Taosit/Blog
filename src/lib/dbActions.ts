@@ -251,6 +251,21 @@ export const postBlog = async (userId: string, post: savedPostType) => {
   return newPost;
 };
 
+export const getCommentsForPost = async (postId: string) => {
+  const comments = await client.comment.findMany({
+    where: {
+      postId,
+    },
+    include: {
+      author: true,
+    },
+  });
+  return comments.map((comment) => ({
+    ...comment,
+    createdAt: comment.createdAt.toISOString(),
+  }));
+};
+
 export const postComment = async (
   userId: string,
   postId: string,
@@ -270,8 +285,52 @@ export const postComment = async (
         },
       },
     },
+    include: {
+      author: true,
+    },
   });
   return comment;
+};
+
+export const removeComment = async (commentId: string, userId: string) => {
+  const comment = await client.comment.findUnique({
+    where: {
+      id: commentId,
+    },
+  });
+  if (!comment) throw new Error("Comment not found");
+  if (comment.authorId !== userId) throw new Error("User is not author");
+  await client.comment.delete({
+    where: {
+      id: commentId,
+    },
+  });
+};
+
+export const updateComment = async (
+  commentId: string,
+  userId: string,
+  content: object
+) => {
+  const comment = await client.comment.findUnique({
+    where: {
+      id: commentId,
+    },
+  });
+  if (!comment) throw new Error("Comment not found");
+  if (comment.authorId !== userId) throw new Error("User is not author");
+  const updatedComment = await client.comment.update({
+    where: {
+      id: commentId,
+    },
+    data: {
+      content: content as Prisma.JsonObject,
+    },
+    include: {
+      author: true,
+    },
+  });
+  return updatedComment;
 };
 
 export const updateBasicUserInfo = async (
