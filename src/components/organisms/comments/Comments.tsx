@@ -1,12 +1,9 @@
 "use client";
-import { Comment, Prisma, User } from "@prisma/client";
+
+import { Prisma, User } from "@prisma/client";
 import { generateHTML } from "@tiptap/html";
 import styles from "./Comments.module.css";
-import NextImage from "next/image";
-import editorStyles from "@/styles/editor.module.css";
-import { DefaultAvatar } from "@/components/atoms/defaultAvatar/DefaultAvatar";
-import { darkenColor, formatDate } from "@/lib/helpers";
-import { HslColorType } from "@/types/types";
+import { formatTimeAgo } from "@/lib/helpers";
 import editIcon from "./edit.svg";
 import deleteIcon from "./delete.svg";
 import doneIcon from "./done.svg";
@@ -14,6 +11,11 @@ import { useEffect, useState } from "react";
 import { editorExtensions } from "@/lib/editorConfig";
 import CommentEditor from "../commentEditor/CommentEditor";
 import { useEditor } from "@tiptap/react";
+import UserAvatar from "@/components/atoms/userAvatar/UserAvatar";
+import IconButton from "@/components/atoms/iconButton/IconButton";
+import editorStyles from "@/styles/editor.module.css";
+import { useSession } from "next-auth/react";
+import { userFields } from "@/types/types";
 
 type CommentType = {
   id: string;
@@ -35,10 +37,10 @@ export default function Comments({
   handleDelete,
   handleDoneEdit,
 }: CommentsProps) {
-  const avatarDiameter = 72;
   const [commentBeingEditted, setCommentBeingEditted] = useState<string | null>(
     null
   );
+  const { data: session } = useSession();
 
   const commentsWithHTML = comments.map((comment) => {
     const content = generateHTML(comment.content as any, editorExtensions);
@@ -77,75 +79,60 @@ export default function Comments({
     <div className={styles.container}>
       {commentsWithHTML.map((comment) => {
         const author = comment.author;
+        const user = session?.user as userFields;
+        const isUserAuthor = user?.id === author.id;
         return (
           <div key={comment.id} className={styles.comment}>
             <div className={styles.commentHeader}>
               <div className={styles.user}>
-                {author.image ? (
-                  <NextImage
-                    className={styles.avatar}
-                    src={author.image}
-                    height={avatarDiameter}
-                    width={avatarDiameter}
-                    alt="avatar"
-                  />
-                ) : (
-                  <DefaultAvatar
-                    className={styles.avatar}
-                    color={darkenColor(author.color as HslColorType)}
-                    height={avatarDiameter}
-                    width={avatarDiameter}
-                  />
-                )}
+                <UserAvatar user={author} />
                 <div className={styles.nameAndTime}>
                   <p className={styles.author}>{author.name}</p>
-                  <p className={styles.time}>{formatDate(comment.createdAt)}</p>
+                  <p className={styles.time}>
+                    {formatTimeAgo(new Date(comment.createdAt))}
+                  </p>
                 </div>
               </div>
-              <div className={styles.iconButtons}>
-                {commentBeingEditted === comment.id ? (
-                  <button
-                    onClick={() => handleDone(comment.id)}
-                    className={styles.iconButton}
-                  >
-                    <NextImage
-                      src={doneIcon}
-                      alt="edit"
-                      width={24}
-                      height={24}
+              {isUserAuthor && (
+                <div className={styles.iconButtons}>
+                  {commentBeingEditted === comment.id ? (
+                    <IconButton
+                      onClick={() => handleDone(comment.id)}
+                      icon={doneIcon}
+                      alt="done"
                     />
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => handleStartEdit(comment.id)}
-                    className={styles.iconButton}
-                  >
-                    <NextImage
-                      src={editIcon}
+                  ) : (
+                    <IconButton
+                      onClick={() => handleStartEdit(comment.id)}
+                      icon={editIcon}
                       alt="edit"
-                      width={24}
-                      height={24}
                     />
-                  </button>
-                )}
-                <button
-                  onClick={() => handleDelete(comment.id)}
-                  className={styles.iconButton}
-                >
-                  <NextImage
-                    src={deleteIcon}
+                  )}
+                  <IconButton
+                    onClick={() => handleDelete(comment.id)}
+                    icon={deleteIcon}
                     alt="delete"
-                    width={24}
-                    height={24}
                   />
-                </button>
-              </div>
+                </div>
+              )}
             </div>
-            <div className={`${styles.editor} ${editorStyles.editor}`}>
+            <div className={styles.editor}>
               {commentBeingEditted === comment.id ? (
-                <CommentEditor editor={editor} />
+                <CommentEditor
+                  className={
+                    isUserAuthor ? styles.userComment : styles.commentContent
+                  }
+                  editor={editor}
+                />
               ) : (
-                <div dangerouslySetInnerHTML={{ __html: comment.content }} />
+                <div className={editorStyles.editor}>
+                  <div
+                    className={
+                      isUserAuthor ? styles.userComment : styles.commentContent
+                    }
+                    dangerouslySetInnerHTML={{ __html: comment.content }}
+                  />
+                </div>
               )}
             </div>
           </div>

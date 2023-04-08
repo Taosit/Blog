@@ -13,10 +13,6 @@
   display: none;
 }
 
-.nav img {
-  border-radius: 50%;
-}
-
 @media (min-width: 500px) {
   .nav {
     top: 0.45rem;
@@ -25,14 +21,6 @@
     display: inline-flex;
     align-items: center;
     gap: 12px;
-  }
-  .avatar {
-    width: 54px;
-    height: 54px;
-  }
-  .nav img {
-    width: 54px;
-    height: 54px;
   }
   .container p {
     font-size: 1.2rem;

@@ -11,11 +11,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import styles from "./BlogHeader.module.css";
 import { deleteBlog } from "@/lib/api";
-import { DefaultAvatar } from "@/components/atoms/defaultAvatar/DefaultAvatar";
-
-type PostType = Post & {
-  author: User;
-};
+import UserAvatar from "@/components/atoms/userAvatar/UserAvatar";
 
 type HeaderProps = {
   postPromise: Promise<any>;
@@ -73,20 +69,7 @@ export default function BlogHeader({ postPromise }: HeaderProps) {
           ) : (
             post.author && (
               <div className={styles.authorContainer}>
-                {post.author.image ? (
-                  <Image
-                    src={post.author.image}
-                    className={styles.avatar}
-                    height={40}
-                    width={40}
-                    alt="avatar"
-                  />
-                ) : (
-                  <DefaultAvatar
-                    color={post.author.color}
-                    className={styles.avatar}
-                  />
-                )}
+                <UserAvatar user={post.author} size="small" />
                 <p>{post.author.name}</p>
               </div>
             )

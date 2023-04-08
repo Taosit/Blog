@@ -1,0 +1,40 @@
+.avatar {
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+}
+
+.small {
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+}
+
+.medium {
+  border-radius: 50%;
+  width: 4rem;
+  height: 4rem;
+}
+
+.large {
+  border-radius: 50%;
+  width: 6rem;
+  height: 6rem;
+}
+
+@media (min-width: 768px) {
+  .small {
+    width: 54px;
+    height: 54px;
+  }
+
+  .medium {
+    width: 5rem;
+    height: 5rem;
+  }
+
+  .large {
+    width: 8rem;
+    height: 8rem;
+  }
+}
