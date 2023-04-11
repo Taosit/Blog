@@ -24,7 +24,7 @@ export const getPost = async (id: string) => {
     include: {
       author: {
         select: {
-          name: true,
+          firstName: true,
           image: true,
           color: true,
         },
@@ -184,7 +184,11 @@ export const getAllPosts = async ({
             },
             {
               author: {
-                name: {
+                firstName: {
+                  contains: search,
+                  mode: "insensitive",
+                },
+                lastName: {
                   contains: search,
                   mode: "insensitive",
                 },
@@ -210,7 +214,8 @@ export const getAllPosts = async ({
     include: {
       author: {
         select: {
-          name: true,
+          firstName: true,
+          lastName: true,
           image: true,
           color: true,
         },
@@ -335,18 +340,18 @@ export const updateComment = async (
 
 export const updateBasicUserInfo = async (
   userId: string,
-  name: string,
-  role: "STUDENT" | "TEACHER",
-  studentNumber: string | null,
-  color: { h: number; s: number; l: number } | undefined
+  firstName: string,
+  lastName: string,
+  role?: "STUDENT" | "TEACHER",
+  studentNumber?: string
 ) => {
   return await client.user.update({
     where: { id: userId },
     data: {
-      name,
-      role,
-      studentNumber,
-      color: color as Prisma.JsonObject,
+      firstName,
+      lastName,
+      ...(role && { role }),
+      ...(studentNumber && { studentNumber }),
     },
   });
 };
@@ -383,7 +388,8 @@ export const getUserPosts = async (userId: string) => {
     include: {
       author: {
         select: {
-          name: true,
+          firstName: true,
+          lastName: true,
           image: true,
           color: true,
         },

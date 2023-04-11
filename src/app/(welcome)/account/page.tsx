@@ -12,6 +12,7 @@ import { ProfessorAccountFields } from "@/components/organisms/professorAccountF
 import { useSession } from "next-auth/react";
 import { updateUser, updateUserImage } from "@/lib/api";
 import ProtectedRoute from "@/components/atoms/protectedRoute/ProtectedRoute";
+import { trpc } from "@/providers/TrpcProvider";
 
 const Account = () => {
   const initialData = {
@@ -32,6 +33,7 @@ const Account = () => {
   const searchParams = useSearchParams();
 
   const formRef = useRef<HTMLFormElement>(null);
+  const userMutation = trpc.user.registerUser.useMutation();
 
   useEffect(() => {
     if (!formRef.current) return;
@@ -63,15 +65,26 @@ const Account = () => {
     }
     if (isFormInvalid(data)) return;
     const user = session.data.user as userFields;
-    updateUser({ id: user.id, data: formatAccountFormData(data) })
-      .then(() => {
-        return updateUserImage({ userId: user.id, image: "" });
-      })
-      .then(() => {
-        const callbackUrl =
-          searchParams?.get("callbackUrl") || `/user/${user.id}}`;
-        router.push(callbackUrl);
-      });
+    userMutation.mutate(
+      { userId: user.id, ...formatAccountFormData(data) },
+      {
+        onSuccess: () => {
+          console.log("success");
+          const callbackUrl =
+            searchParams?.get("callbackUrl") || `/user/${user.id}}`;
+          router.push(callbackUrl);
+        },
+      }
+    );
+    // updateUser({ id: user.id, data: formatAccountFormData(data) })
+    //   .then(() => {
+    //     return updateUserImage({ userId: user.id, image: "" });
+    //   })
+    //   .then(() => {
+    //     const callbackUrl =
+    //       searchParams?.get("callbackUrl") || `/user/${user.id}}`;
+    //     router.push(callbackUrl);
+    //   });
   };
 
   return (

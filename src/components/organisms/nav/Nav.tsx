@@ -2,34 +2,30 @@
 
 import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
 import styles from "./Nav.module.css";
-import { userFields } from "@/types/types";
-import { fetchUser } from "@/lib/api";
 import UserAvatar from "@/components/atoms/userAvatar/UserAvatar";
+import { trpc } from "@/providers/TrpcProvider";
 
 export const Nav = () => {
   const session = useSession();
-  const [user, setUser] = useState<Partial<userFields>>({});
-  useEffect(() => {
-    if (!session.data?.user) return;
-    const user = session.data.user as userFields;
-    fetchUser(user.id).then((data) => {
-      setUser(data);
-    });
-  }, [session.data?.user]);
+  let { data: user, isLoading } = trpc.user.getUser.useQuery(
+    {
+      userId: session.data?.user?.id,
+    },
+    { enabled: !!session.data }
+  );
 
   return (
     <div className={styles.nav}>
       {user?.id ? (
         <Link href={`user/${user.id}`} className={styles.container}>
           <UserAvatar user={user} size="small" />
-          <p>{user.name?.split(" ")[0] || "User"}</p>
+          <p>{user.firstName || "User"}</p>
         </Link>
       ) : (
         <button className={styles.container} onClick={() => signIn()}>
           <UserAvatar size="small" />
-          <p>Sign in</p>
+          <p>{isLoading ? "User" : "Sign in"}</p>
         </button>
       )}
     </div>

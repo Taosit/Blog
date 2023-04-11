@@ -24,8 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     userId,
     `${firstName} ${lastName}`,
     role,
-    studentNumber,
-    color
+    studentNumber
   );
   await updateStudentCourses(userId, courses);
 

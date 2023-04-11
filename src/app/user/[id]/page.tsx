@@ -13,9 +13,9 @@ const Profile = ({ id }: { id: string }) => {
 
   return (
     <div className={styles.container}>
-      <TopBar userPromise={userPromise} />
+      <TopBar userId={id} />
       <div className={styles.row}>
-        <UserCard userPromise={userPromise} />
+        <UserCard userId={id} />
         <Suspense fallback={<LoadingStats />}>
           {/* @ts-expect-error Server Component */}
           <BlogStats postsPromise={blogPromise} />

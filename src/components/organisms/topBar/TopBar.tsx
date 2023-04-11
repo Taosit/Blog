@@ -1,75 +1,70 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import styles from "./TopBar.module.css";
 import { DefaultAvatar } from "@/components/atoms/defaultAvatar/DefaultAvatar";
 import Link from "next/link";
 import doubleLeft from "./double-left.svg";
-import { Class, User } from "@prisma/client";
-import { HslColorType, userFields } from "@/types/types";
+import { HslColorType } from "@/types/types";
 import { cropImageSquare, toColorString } from "@/lib/helpers";
 import ColorPicker from "@/components/atoms/colorPicker/ColorPicker";
-import { updateUserColor, updateUserImage } from "@/lib/api";
 import { useRouter } from "next/navigation";
-
-type UserType = User & {
-  classes: Class[];
-};
+import { trpc } from "@/providers/TrpcProvider";
 
 type TopBarProps = {
-  userPromise: Promise<
-    User & {
-      classes: Class[];
-    }
-  >;
+  userId: string;
 };
 
-export default function TopBar({ userPromise }: TopBarProps) {
-  const [user, setUser] = useState<Partial<UserType>>({});
+export default function TopBar({ userId }: TopBarProps) {
   const [color, setColor] = useState<HslColorType>({ h: 0, s: 0, l: 80 });
-  const backgroundImage = `linear-gradient(180deg, ${toColorString(
-    color
-  )} 66.67%, white 66.67%)`;
 
   const router = useRouter();
   const uploadRef = useRef<HTMLLabelElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
 
+  const { data: user } = trpc.user.getUser.useQuery({
+    userId,
+  });
+  const colorMutation = trpc.user.updateUserColor.useMutation();
+  const avatarMutation = trpc.user.updateUserAvatar.useMutation();
+
   useEffect(() => {
-    userPromise.then((user) => {
-      setUser(user);
-      setColor(user.color as HslColorType);
-    });
-  }, [userPromise]);
+    if (!user) return;
+    setColor(user.color as HslColorType);
+  }, [user]);
 
-  const updateColor = useCallback(async () => {
-    await updateUserColor({
-      userId: user.id!,
-      color,
-    });
-  }, [color, user.id]);
+  const updateColor = colorMutation.mutate;
 
-  const updateImage = useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (!e.target.files?.[0]) return;
-      const imageFile = e.target.files[0];
-      if (imageFile.type.split("/")[0] !== "image") return;
-      const reader = new FileReader();
-      reader.readAsDataURL(imageFile);
-      reader.onloadend = async () => {
-        const image = reader.result as string;
-        if (!image) return;
-        const croppedImage = await cropImageSquare(image);
-        updateUserImage({
+  const updateImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.[0]) return;
+    const imageFile = e.target.files[0];
+    if (imageFile.type.split("/")[0] !== "image") return;
+    const reader = new FileReader();
+    reader.readAsDataURL(imageFile);
+    reader.onloadend = async () => {
+      const image = reader.result as string;
+      if (!image) return;
+      const croppedImage = await cropImageSquare(image);
+      avatarMutation.mutate(
+        {
           image: croppedImage,
-          userId: user.id!,
-        }).then(() => router.refresh());
-        overlayRef.current?.blur();
-      };
-    },
-    [user.id]
-  );
+          userId,
+        },
+        {
+          onSuccess: () => {
+            console.log("success");
+            router.refresh();
+            overlayRef.current?.blur();
+          },
+        }
+      );
+    };
+  };
+
+  const backgroundImage = `linear-gradient(180deg, ${toColorString(
+    color
+  )} 66.67%, white 66.67%)`;
 
   return (
     <div className={styles.topBar} style={{ backgroundImage }}>
@@ -83,12 +78,12 @@ export default function TopBar({ userPromise }: TopBarProps) {
           <ColorPicker
             color={color}
             onChange={setColor}
-            onSetColor={updateColor}
+            onSetColor={() => updateColor({ userId: user!.id, color })}
           />
         </div>
         <div className={styles.userContainer}>
           <div className={styles.imageContainer}>
-            {user.image ? (
+            {user?.image ? (
               <Image src={user.image} alt="avatar" fill />
             ) : (
               <DefaultAvatar color={color} className={styles.defaultAvatar} />
@@ -109,7 +104,7 @@ export default function TopBar({ userPromise }: TopBarProps) {
               <input id="avatar-upload" type="file" onChange={updateImage} />
             </div>
           </div>
-          <h1 className={styles.username}>{user.name?.split(" ")[0]}</h1>
+          <h1 className={styles.username}>{user?.firstName || "User"}</h1>
         </div>
       </div>
     </div>

@@ -2,16 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import styles from "./UserCard.module.css";
-import { User, Class } from "@prisma/client";
 import { InputGroup } from "@/components/atoms/inputGroup/InputGroup";
 import { formatClass, getNameError, isCourseValid } from "@/lib/helpers";
 import { EditIcon } from "./EditIcon";
 import CheckmarkIcon from "./CheckmarkIcon";
-import { updateUser } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import TagsInputGroup from "@/components/atoms/tagsInputGroup/TagsInputGroup";
 import { useSession } from "next-auth/react";
-import { userFields } from "@/types/types";
+import { trpc } from "@/providers/TrpcProvider";
 
 type UserType = {
   firstName: string;
@@ -20,16 +18,17 @@ type UserType = {
 };
 
 type UserCardProps = {
-  userPromise: Promise<
-    User & {
-      classes: Class[];
-    }
-  >;
+  userId: string;
 };
 
-export default function UserCard({ userPromise }: UserCardProps) {
+export default function UserCard({ userId }: UserCardProps) {
   const router = useRouter();
   const session = useSession();
+
+  const { data: user } = trpc.user.getUser.useQuery({
+    userId,
+  });
+  const userMutation = trpc.user.updateBasicUserInfo.useMutation();
 
   const [data, setData] = useState<UserType>({
     firstName: "",
@@ -38,35 +37,34 @@ export default function UserCard({ userPromise }: UserCardProps) {
   });
 
   useEffect(() => {
-    if (!session.data?.user) return;
-    userPromise.then((user) => {
-      if (user.role === "STUDENT" && !user.studentNumber) {
-        router.push("/account");
-      }
-      const courses = user.classes?.map((classObj) =>
-        classObj.name.toUpperCase()
-      );
-      setData({
-        firstName: user.name?.split(" ")[0] || "",
-        lastName: user.name?.split(" ")[1] || "",
-        courses: courses || [],
-      });
+    if (!session.data?.user || !user) return;
+    if (user.role === "STUDENT" && !user.studentNumber) {
+      router.push("/account");
+    }
+    const courses = user.classes?.map((classObj) =>
+      classObj.name.toUpperCase()
+    );
+    setData({
+      firstName: user.firstName ?? "",
+      lastName: user.lastName ?? "",
+      courses: courses || [],
     });
-  }, [session, userPromise]);
+  }, [session, user]);
 
   const [isEditing, setIsEditing] = useState(false);
 
-  const updateUserInfo = async () => {
-    const user = session.data!.user as userFields;
-    await updateUser({
-      id: user.id,
-      data: {
-        ...data,
-        role: "STUDENT",
-        studentNumber: user.studentNumber!,
+  const updateUserInfo = () => {
+    userMutation.mutate(
+      {
+        userId,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        courses: data.courses,
       },
-    });
-    setIsEditing(false);
+      {
+        onSuccess: () => setIsEditing(false),
+      }
+    );
   };
 
   return (
