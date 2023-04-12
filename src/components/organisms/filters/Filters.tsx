@@ -26,6 +26,7 @@ export const Filters = ({ getFilters }: { getFilters: Promise<any> }) => {
       params.set(key, obj[key].toLowerCase());
     });
     router.replace(`${pathname}?${params}`);
+    router.refresh();
   };
 
   return (

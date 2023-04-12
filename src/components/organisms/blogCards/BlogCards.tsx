@@ -1,10 +1,8 @@
-"use client";
-
-import { fetchPosts } from "@/lib/api";
 import { HslColorType } from "@/types/types";
-import React, { useEffect, useState } from "react";
+import React, { Suspense } from "react";
 import { Card } from "../card/Card";
 import { CardLoader } from "../cardLoader/CardLoader";
+import { getAllPosts } from "@/lib/dbActions";
 import styles from "./BlogCards.module.css";
 type SearchParamsType = {
   search?: string;
@@ -38,19 +36,23 @@ export const BlogCards = ({
   searchParams = {},
   showAuthor = true,
 }: BlogCardType) => {
-  const [blogs, setBlogs] = useState<PostType[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
-    fetchPosts(searchParams).then((data) => {
-      setBlogs(data);
-      setIsLoading(false);
-    });
-  }, [searchParams]);
+  const blogsPromise = getAllPosts(searchParams);
 
-  if (isLoading) {
-    return <LoadingCards />;
-  }
+  return (
+    <Suspense fallback={<LoadingCards />}>
+      {/* @ts-expect-error Server Component */}
+      <Blogs blogsPromise={blogsPromise} showAuthor={showAuthor} />
+    </Suspense>
+  );
+};
 
+type BlogsType = {
+  blogsPromise: Promise<PostType[]>;
+  showAuthor: boolean;
+};
+
+async function Blogs({ blogsPromise, showAuthor }: BlogsType) {
+  const blogs = await blogsPromise;
   return (
     <div className={styles.container}>
       {blogs.map((blog) => (
@@ -58,7 +60,7 @@ export const BlogCards = ({
       ))}
     </div>
   );
-};
+}
 
 function LoadingCards() {
   return (

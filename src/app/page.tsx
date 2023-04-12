@@ -14,6 +14,8 @@ type searchParamsProps = {
   searchParams: SearchParamsType;
 };
 
+export const dynamic = "force-dynamic";
+
 const Blogs = ({ searchParams }: searchParamsProps) => {
   const getFilters = getCoursesAndSemesters();
   return (

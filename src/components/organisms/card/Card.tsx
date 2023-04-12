@@ -73,7 +73,7 @@ export const Card = ({
                   alt="avatar"
                 />
               )}
-              <p className={styles.author}>{author.name}</p>
+              <p className={styles.author}>{author.firsrName}</p>
             </div>
           )}
         </div>
