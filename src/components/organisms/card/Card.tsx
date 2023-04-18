@@ -11,7 +11,8 @@ type CardProps = {
   title: string;
   tags: string[];
   author?: {
-    name: string;
+    firstName: string;
+    lastName: string;
     image: string;
     color: HslColorType;
   };
@@ -73,7 +74,9 @@ export const Card = ({
                   alt="avatar"
                 />
               )}
-              <p className={styles.author}>{author.firsrName}</p>
+              <p className={styles.author}>
+                {author.firstName} {author.lastName}
+              </p>
             </div>
           )}
         </div>

@@ -10,7 +10,6 @@ import { accountFields, userFields } from "@/types/types";
 import { StudentAccountFields } from "@/components/organisms/studentAccountFields/StudentAccountFields";
 import { ProfessorAccountFields } from "@/components/organisms/professorAccountFields/ProfessorAccountFields";
 import { useSession } from "next-auth/react";
-import { updateUser, updateUserImage } from "@/lib/api";
 import ProtectedRoute from "@/components/atoms/protectedRoute/ProtectedRoute";
 import { trpc } from "@/providers/TrpcProvider";
 
@@ -69,22 +68,12 @@ const Account = () => {
       { userId: user.id, ...formatAccountFormData(data) },
       {
         onSuccess: () => {
-          console.log("success");
           const callbackUrl =
             searchParams?.get("callbackUrl") || `/user/${user.id}}`;
           router.push(callbackUrl);
         },
       }
     );
-    // updateUser({ id: user.id, data: formatAccountFormData(data) })
-    //   .then(() => {
-    //     return updateUserImage({ userId: user.id, image: "" });
-    //   })
-    //   .then(() => {
-    //     const callbackUrl =
-    //       searchParams?.get("callbackUrl") || `/user/${user.id}}`;
-    //     router.push(callbackUrl);
-    //   });
   };
 
   return (

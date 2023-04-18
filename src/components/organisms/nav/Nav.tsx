@@ -8,7 +8,7 @@ import { trpc } from "@/providers/TrpcProvider";
 
 export const Nav = () => {
   const session = useSession();
-  let { data: user, isLoading } = trpc.user.getUser.useQuery(
+  const { data: user, isLoading } = trpc.user.getUser.useQuery(
     {
       userId: session.data?.user?.id,
     },

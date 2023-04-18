@@ -1,4 +1,4 @@
-import { draftPostType, savedPostType } from "@/types/types";
+import { draftPostType, HslColorType, savedPostType } from "@/types/types";
 import { Prisma } from "@prisma/client";
 import { formatClass, getTerm } from "./helpers";
 import client from "./prismadb";
@@ -90,7 +90,13 @@ export const getSavedPost = async (id: string) => {
       class: true,
     },
   });
-  return post;
+  if (!post) return null;
+  return {
+    ...post,
+    coverType: post?.coverType as "COLOR" | "IMAGE",
+    color: post?.color ? (post.color as HslColorType) : undefined,
+    content: post?.content ? (post.content as object) : undefined,
+  };
 };
 
 export const deleteSavedPost = async (id: string) => {
@@ -125,21 +131,29 @@ const getClassByName = async (name: string) => {
 
 export const updateSavedPost = async (id: string, post: draftPostType) => {
   const { class: className, ...rest } = post;
-  const corespondingClass = await getClassByName(className);
-  if (!corespondingClass) throw new Error("Class not found");
-  const userIsInClass = corespondingClass.users.some((user) => user.id === id);
-  if (!userIsInClass) throw new Error("User is not in class");
+  let corespondingClass;
+  if (className) {
+    corespondingClass = await getClassByName(className);
+    if (!corespondingClass) throw new Error("Class not found");
+    const userIsInClass = corespondingClass.users.some(
+      (user) => user.id === id
+    );
+    if (!userIsInClass) throw new Error("User is not in class");
+  }
   const updatedPost = await client.savedPost.upsert({
     where: {
       userId: id,
     },
     create: {
       userId: id,
-      content: rest.content as Prisma.InputJsonValue,
-      classId: corespondingClass.id,
+      content: rest.content as Prisma.JsonObject,
+      ...(corespondingClass && { classId: corespondingClass.id }),
       ...rest,
     },
-    update: { classId: corespondingClass.id, ...rest },
+    update: {
+      ...(corespondingClass && { classId: corespondingClass.id }),
+      ...rest,
+    },
   });
   return updatedPost;
 };
@@ -229,8 +243,18 @@ export const getAllPosts = async ({
   }));
 };
 
-export const postBlog = async (userId: string, post: savedPostType) => {
-  const { class: className, authorId, ...rest } = post;
+type Post = {
+  title: string;
+  class: string;
+  tags: string[];
+  coverType: "COLOR" | "IMAGE";
+  color?: HslColorType | undefined;
+  image?: string | undefined;
+  content: object;
+};
+
+export const postBlog = async (userId: string, post: Post) => {
+  const { class: className, ...rest } = post;
   const corespondingClass = await getClassByName(className);
   if (!corespondingClass) throw new Error("Class not found");
   const userIsInClass = corespondingClass.users.some(
@@ -249,7 +273,6 @@ export const postBlog = async (userId: string, post: savedPostType) => {
           id: userId,
         },
       },
-      content: rest.content as Prisma.JsonObject,
       ...rest,
     },
   });

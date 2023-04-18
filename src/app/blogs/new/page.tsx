@@ -2,20 +2,16 @@
 
 import { Button } from "@/components/atoms/button/Button";
 import { BlogForm } from "@/components/organisms/blogForm/BlogForm";
-import {
-  fetchSavedPost,
-  fetchUserClasses,
-  publishBlog,
-  savePost,
-} from "@/lib/api";
+import { publishBlog } from "@/lib/api";
 import { coverType, draftPostType, userFields } from "@/types/types";
 import { Class } from "@prisma/client";
 import { useEditor } from "@tiptap/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./NewBlog.module.css";
 import { editorExtensions } from "@/lib/editorConfig";
+import { trpc } from "@/providers/TrpcProvider";
 
 const NewBlog = () => {
   const initialBlog = {
@@ -29,12 +25,23 @@ const NewBlog = () => {
 
   const [blog, setBlog] = useState<draftPostType>(initialBlog);
   const router = useRouter();
-  const { status, data: session } = useSession({
+  const { data: session } = useSession({
     required: true,
     onUnauthenticated() {
       router.push("/signin");
     },
   });
+
+  const userId = (session?.user as userFields)?.id;
+  const { data: user } = trpc.user.getUser.useQuery(
+    {
+      userId: userId,
+    },
+    { enabled: !!session }
+  );
+
+  const { data: savedPost } = trpc.savedPost.get.useQuery({ userId });
+  const savedPostMutation = trpc.savedPost.update.useMutation();
 
   const editor = useEditor({
     extensions: editorExtensions,
@@ -44,36 +51,32 @@ const NewBlog = () => {
   useEffect(() => {
     if (!session?.user) return;
     if (!editor) return;
-    const user = session.user as userFields;
-    fetchSavedPost(user.id)
-      .then((data) => {
-        if (data) {
-          const { id, classId, class: classInfo, userId, ...post } = data;
-          setBlog({ ...post, class: classInfo.name.toUpperCase() });
-          if (post.content) {
-            editor?.commands.setContent(post.content);
-          }
-        } else {
-          return fetchUserClasses(user.id);
-        }
-      })
-      .then((classes) => {
-        if (classes && classes.length > 0) {
-          const course = classes[0] as Class;
-          setBlog((prev) => {
-            return { ...prev, class: course.name.toUpperCase() };
-          });
-        }
-      });
-  }, [status, session, editor?.getJSON().type]);
+    if (savedPost) {
+      const { id, classId, class: classInfo, userId, ...post } = savedPost;
+      setBlog({ ...post, class: classInfo?.name?.toUpperCase() ?? "" });
+      if (post.content) {
+        editor?.commands.setContent(post.content as object);
+      }
+    } else if (user?.classes && user.classes.length > 0) {
+      const course = user.classes[0] as Class;
+      setBlog({ ...initialBlog, class: course.name.toUpperCase() });
+    }
+  }, [session?.user, savedPost, editor?.getJSON().type]);
 
   const save = async (blog: draftPostType | null) => {
     if (!session?.user) return;
     const content = editor?.getJSON();
-    const user = session.user as userFields;
-    const blogToSave = blog ? { ...blog, content } : null;
-    await savePost(user.id, blogToSave);
-    router.push(`/user/${user.id}`);
+    const blogToSave = blog
+      ? {
+          ...blog,
+          content: content ? JSON.stringify(content) : undefined,
+          authorId: userId,
+        }
+      : undefined;
+    console.log({ blogToSave });
+    savedPostMutation.mutateAsync({ userId, post: blogToSave });
+    router.push(`/user/${userId}`);
+    router.refresh();
   };
 
   const publish = async () => {

@@ -22,7 +22,8 @@ type PostType = {
   title: string;
   tags: string[];
   author?: {
-    name: string;
+    firstName: string;
+    lastName: string;
     image: string;
     color: HslColorType;
   };
