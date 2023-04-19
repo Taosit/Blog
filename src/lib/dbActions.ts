@@ -343,7 +343,8 @@ export const updateComment = async (
     },
   });
   if (!comment) throw new Error("Comment not found");
-  if (comment.authorId !== userId) throw new Error("User is not author");
+  if (comment.authorId !== userId)
+    throw new Error("User is not the author of the comment");
   const updatedComment = await client.comment.update({
     where: {
       id: commentId,

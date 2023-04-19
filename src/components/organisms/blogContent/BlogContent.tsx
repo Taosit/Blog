@@ -1,11 +1,6 @@
-import { Post, User } from "@prisma/client";
 import { generateHTML } from "@tiptap/html";
 import styles from "./BlogContent.module.css";
 import editorStyles from "@/styles/editor.module.css";
-import StarterKit from "@tiptap/starter-kit";
-import Link from "@tiptap/extension-link";
-import Image from "@tiptap/extension-image";
-import Youtube from "@tiptap/extension-youtube";
 import { editorExtensions } from "@/lib/editorConfig";
 
 type PostContentProps = {

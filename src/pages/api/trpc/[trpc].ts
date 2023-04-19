@@ -5,9 +5,4 @@ import { createNextApiHandler } from "@trpc/server/adapters/next";
 export default createNextApiHandler({
   router: appRouter,
   createContext: createTRPCContext,
-  //   createContext(opts) {
-  //     return createTRPCContext({
-  //       ...opts,
-  //     });
-  //   },
 });

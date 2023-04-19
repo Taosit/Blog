@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/atoms/button/Button";
 import { BlogForm } from "@/components/organisms/blogForm/BlogForm";
-import { fetchPost } from "@/lib/api";
 import { editorExtensions } from "@/lib/editorConfig";
 import { trpc } from "@/providers/TrpcProvider";
 import {
