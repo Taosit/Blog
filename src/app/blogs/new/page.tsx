@@ -12,7 +12,7 @@ import { Class } from "@prisma/client";
 import { useEditor } from "@tiptap/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import styles from "./NewBlog.module.css";
 import { editorExtensions } from "@/lib/editorConfig";
 import { trpc } from "@/providers/TrpcProvider";
@@ -35,8 +35,6 @@ const NewBlog = () => {
       router.push("/signin");
     },
   });
-
-  const [, startTransition] = useTransition();
 
   const userId = (session?.user as userFields)?.id;
   const { data: user } = trpc.user.getUser.useQuery(
