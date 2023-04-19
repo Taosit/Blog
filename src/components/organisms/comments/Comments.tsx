@@ -87,7 +87,9 @@ export default function Comments({
               <div className={styles.user}>
                 <UserAvatar user={author} />
                 <div className={styles.nameAndTime}>
-                  <p className={styles.author}>{author.name}</p>
+                  <p className={styles.author}>
+                    {author.firstName} {author.lastName}
+                  </p>
                   <p className={styles.time}>
                     {formatTimeAgo(new Date(comment.createdAt))}
                   </p>

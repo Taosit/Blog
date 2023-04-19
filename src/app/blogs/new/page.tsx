@@ -2,8 +2,12 @@
 
 import { Button } from "@/components/atoms/button/Button";
 import { BlogForm } from "@/components/organisms/blogForm/BlogForm";
-import { publishBlog } from "@/lib/api";
-import { coverType, draftPostType, userFields } from "@/types/types";
+import {
+  coverType,
+  draftPostType,
+  savedPostType,
+  userFields,
+} from "@/types/types";
 import { Class } from "@prisma/client";
 import { useEditor } from "@tiptap/react";
 import { useSession } from "next-auth/react";
@@ -42,6 +46,7 @@ const NewBlog = () => {
 
   const { data: savedPost } = trpc.savedPost.get.useQuery({ userId });
   const savedPostMutation = trpc.savedPost.update.useMutation();
+  const newPostMutation = trpc.posts.createPost.useMutation();
 
   const editor = useEditor({
     extensions: editorExtensions,
@@ -73,21 +78,22 @@ const NewBlog = () => {
           authorId: userId,
         }
       : undefined;
-    console.log({ blogToSave });
     savedPostMutation.mutateAsync({ userId, post: blogToSave });
     router.push(`/user/${userId}`);
-    router.refresh();
   };
 
   const publish = async () => {
     if (!session?.user) return;
     const content = editor?.getJSON();
     if (!content) return;
-    const user = session.user as userFields;
-    const blogToSave = { ...blog, content };
-    await publishBlog(user.id, blogToSave);
+    const blogToSave = {
+      ...blog,
+      content: content ? JSON.stringify(content) : undefined,
+      authorId: userId,
+    } as savedPostType;
+    newPostMutation.mutateAsync({ userId, post: blogToSave });
+    router.push(`/user/${userId}`);
     router.refresh();
-    router.push(`/user/${user.id}`);
   };
 
   return (

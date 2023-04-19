@@ -39,7 +39,7 @@ export type savedPostType = {
   coverType: "COLOR" | "IMAGE";
   color?: HslColorType;
   image?: string;
-  content?: object;
+  content: string;
   authorId: string;
 };
 

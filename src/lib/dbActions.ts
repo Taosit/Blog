@@ -1,5 +1,6 @@
 import { draftPostType, HslColorType, savedPostType } from "@/types/types";
 import { Prisma } from "@prisma/client";
+import { JSONObject } from "superjson/dist/types";
 import { formatClass, getTerm } from "./helpers";
 import client from "./prismadb";
 
@@ -41,16 +42,12 @@ export const getPost = async (id: string) => {
   return { ...post, createdAt: post.createdAt.toISOString() };
 };
 
-export const updatePost = async (
-  postId: string,
-  userId: string,
-  post: savedPostType
-) => {
-  const { class: className, ...rest } = post;
+export const updatePost = async (postId: string, post: savedPostType) => {
+  const { class: className, content, ...rest } = post;
   const corespondingClass = await getClassByName(className);
   if (!corespondingClass) throw new Error("Class not found");
   const userIsInClass = corespondingClass.users.some(
-    (user) => user.id === userId
+    (user) => user.id === post.authorId
   );
   if (!userIsInClass) throw new Error("User is not in class");
   const updatedPost = await client.post.update({
@@ -59,20 +56,20 @@ export const updatePost = async (
     },
     data: {
       classId: corespondingClass.id,
+      content: JSON.parse(content),
       ...rest,
     },
   });
   return updatedPost;
 };
 
-export const removePost = async (postId: string, userId: string) => {
+export const removePost = async (postId: string) => {
   const postToDelete = await client.post.findUnique({
     where: {
       id: postId,
     },
   });
   if (!postToDelete) return;
-  if (postToDelete.authorId !== userId) throw new Error("User is not author");
   const deleted = await client.post.delete({
     where: {
       id: postId,

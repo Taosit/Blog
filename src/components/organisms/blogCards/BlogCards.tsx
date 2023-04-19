@@ -2,7 +2,7 @@ import { HslColorType } from "@/types/types";
 import React, { Suspense } from "react";
 import { Card } from "../card/Card";
 import { CardLoader } from "../cardLoader/CardLoader";
-import { getAllPosts } from "@/lib/dbActions";
+import { getAllPosts, getUserPosts } from "@/lib/dbActions";
 import styles from "./BlogCards.module.css";
 type SearchParamsType = {
   search?: string;
@@ -37,7 +37,9 @@ export const BlogCards = ({
   searchParams = {},
   showAuthor = true,
 }: BlogCardType) => {
-  const blogsPromise = getAllPosts(searchParams);
+  const blogsPromise = searchParams.userId
+    ? getUserPosts(searchParams.userId)
+    : getAllPosts(searchParams);
 
   return (
     <Suspense fallback={<LoadingCards />}>

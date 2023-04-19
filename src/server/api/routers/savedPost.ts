@@ -58,7 +58,6 @@ export const savedPostRouter = createTRPCRouter({
         const image = await uploadToCloudinary(post.image);
         post.image = image.secure_url;
       }
-      console.log(post.content);
       const content = post.content ? JSON.parse(post.content) : undefined;
       const savedPost = await updateSavedPost(input.userId, {
         ...post,

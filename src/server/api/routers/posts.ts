@@ -1,5 +1,12 @@
 import { uploadToCloudinary } from "@/lib/cloudinary";
-import { deleteSavedPost, getAllPosts, postBlog } from "@/lib/dbActions";
+import {
+  deleteSavedPost,
+  getAllPosts,
+  getPost,
+  postBlog,
+  removePost,
+  updatePost,
+} from "@/lib/dbActions";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
@@ -19,6 +26,12 @@ export const postsRouter = createTRPCRouter({
       const posts = await getAllPosts(input);
       return { posts };
     }),
+
+  getPost: publicProcedure.input(z.string()).query(async ({ input }) => {
+    const post = await getPost(input);
+    return post;
+  }),
+
   createPost: protectedProcedure
     .input(
       z.object({
@@ -36,11 +49,11 @@ export const postsRouter = createTRPCRouter({
             })
             .optional(),
           image: z.string().optional(),
-          content: z.object(),
+          content: z.string(),
         }),
       })
     )
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       const { userId, post } = input;
       if (userId !== ctx.currentUser.id) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
@@ -52,14 +65,58 @@ export const postsRouter = createTRPCRouter({
         const image = await uploadToCloudinary(post.image);
         post.image = image.secure_url;
       }
-      postBlog(userId, post)
+      postBlog(userId, { ...post, content: JSON.parse(post.content) })
         .then((newPost) => {
           deleteSavedPost(userId);
           return { newPost };
         })
         .catch((err) => {
-          console.error(err);
           throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
         });
+    }),
+
+  updatePost: protectedProcedure
+    .input(
+      z.object({
+        postId: z.string(),
+        post: z.object({
+          authorId: z.string(),
+          title: z.string(),
+          class: z.string(),
+          tags: z.array(z.string()),
+          coverType: z.enum(["COLOR", "IMAGE"]),
+          color: z
+            .object({
+              h: z.number(),
+              s: z.number(),
+              l: z.number(),
+            })
+            .optional(),
+          image: z.string().optional(),
+          content: z.string(),
+        }),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { postId, post } = input;
+      if (post.authorId !== ctx.currentUser.id) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+      if (!post) {
+        throw new TRPCError({ code: "BAD_REQUEST" });
+      }
+      const updatedPost = await updatePost(postId, post);
+      return updatedPost;
+    }),
+
+  deletePost: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ ctx, input }) => {
+      const post = await getPost(input);
+      if (post.authorId !== ctx.currentUser.id) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+      await removePost(input);
+      return input;
     }),
 });

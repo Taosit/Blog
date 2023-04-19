@@ -2,9 +2,15 @@
 
 import { Button } from "@/components/atoms/button/Button";
 import { BlogForm } from "@/components/organisms/blogForm/BlogForm";
-import { fetchPost, updateBlog } from "@/lib/api";
+import { fetchPost } from "@/lib/api";
 import { editorExtensions } from "@/lib/editorConfig";
-import { coverType, draftPostType, userFields } from "@/types/types";
+import { trpc } from "@/providers/TrpcProvider";
+import {
+  coverType,
+  draftPostType,
+  savedPostType,
+  userFields,
+} from "@/types/types";
 import { useEditor } from "@tiptap/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -31,6 +37,9 @@ const EditBlog = ({ params }: { params: { id: string } }) => {
       router.push("/signin");
     },
   });
+  const { data: post } = trpc.posts.getPost.useQuery(params.id);
+  const updatePostMutation = trpc.posts.updatePost.useMutation();
+
   const user = session?.user as userFields;
 
   const editor = useEditor({
@@ -41,34 +50,38 @@ const EditBlog = ({ params }: { params: { id: string } }) => {
   useEffect(() => {
     if (!session?.user) return;
     if (!editor) return;
-    fetchPost(params.id).then((data) => {
-      if (data) {
-        const {
-          id,
-          classId,
-          class: classInfo,
-          authorId,
-          author,
-          comments,
-          ...post
-        } = data;
-        if (user.id !== authorId) {
-          router.push(`/blogs/${params.id}`);
-        }
-        setAuthorId(authorId);
-        setBlog({ ...post, class: classInfo.name.toUpperCase() });
-        if (post.content) {
-          editor?.commands.setContent(post.content);
-        }
-      }
-    });
-  }, [editor?.getJSON().type, params.id, session, user?.id]);
+    if (!post) return;
+    const {
+      id,
+      classId,
+      class: classInfo,
+      authorId,
+      author,
+      comments,
+      ...rest
+    } = post;
+    if (user.id !== authorId) {
+      router.push(`/blogs/${params.id}`);
+    }
+    setAuthorId(authorId);
+    setBlog({ ...rest, class: classInfo.name.toUpperCase() });
+    if (rest.content) {
+      editor?.commands.setContent(rest.content as object);
+    }
+  }, [editor?.getJSON().type, post, params.id, session, user?.id]);
 
   const save = async () => {
     const content = editor?.getJSON();
     if (!content || user.id !== authorId) return;
-    const blogToSave = { ...blog, content, authorId: user.id };
-    await updateBlog(params.id, blogToSave);
+    const blogToSave = {
+      ...blog,
+      content: content ? JSON.stringify(content) : undefined,
+      authorId: user.id,
+    } as savedPostType;
+    await updatePostMutation.mutateAsync({
+      postId: params.id,
+      post: blogToSave,
+    });
     router.push(`/blogs/${params.id}`);
     router.refresh();
   };
