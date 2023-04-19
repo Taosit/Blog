@@ -1,12 +1,7 @@
 "use client";
 
-import {
-  deleteComment,
-  editComment,
-  fetchComments,
-  sendComment,
-} from "@/lib/api";
-import { Comment, Prisma, User } from "@prisma/client";
+import { trpc } from "@/providers/TrpcProvider";
+import { Prisma, User } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import CommentBox from "../commentBox/CommentBox";
@@ -28,37 +23,47 @@ type CommentType = {
 
 export default function BlogCommentSection({ postId }: CommentSectionProps) {
   const [comments, setComments] = useState<CommentType[]>([]);
+
   const { status, data: session } = useSession();
+  const { data: fetchedComments } = trpc.comments.getComments.useQuery(postId);
+  const createCommentMutation = trpc.comments.createComment.useMutation();
+  const updateCommentMutation = trpc.comments.updateComment.useMutation();
+  const deleteCommentMutation = trpc.comments.deleteComment.useMutation();
 
   useEffect(() => {
-    fetchComments(postId).then((comments) => setComments(comments));
-  }, [postId]);
+    if (!fetchedComments) return;
+    setComments(fetchedComments);
+  }, [fetchedComments]);
 
   const handleDelete = (id: string) => {
-    deleteComment(postId, id).then(() => {
+    deleteCommentMutation.mutateAsync(id).then(() => {
       setComments(comments.filter((comment) => comment.id !== id));
     });
   };
 
   const handleSend = (content: object) => {
     if (!session?.user) return;
-    sendComment(postId, content).then((res) => {
-      setComments([...comments, res]);
-    });
+    createCommentMutation
+      .mutateAsync({ postId, comment: JSON.stringify(content) })
+      .then((res) => {
+        setComments([res, ...comments]);
+      });
   };
 
   const handleDoneEdit = (id: string, content: object) => {
     if (!session?.user) return;
-    editComment(postId, id, content).then((res) => {
-      setComments(
-        comments.map((comment) => {
-          if (comment.id === id) {
-            return res;
-          }
-          return comment;
-        })
-      );
-    });
+    updateCommentMutation
+      .mutateAsync({ commentId: id, content: JSON.stringify(content) })
+      .then((res) => {
+        setComments(
+          comments.map((comment) => {
+            if (comment.id === id) {
+              return res;
+            }
+            return comment;
+          })
+        );
+      });
   };
 
   return (

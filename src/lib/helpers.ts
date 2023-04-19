@@ -88,7 +88,6 @@ export const formatAccountFormData = (data: accountFields) => {
     role: (data.isStudent === "Yes" ? "STUDENT" : "TEACHER") as Role,
     studentNumber: data.studentNumber,
     courses: data.courses,
-    color: { h: Math.floor(Math.random() * 360), s: 100, l: 80 },
   };
 };
 

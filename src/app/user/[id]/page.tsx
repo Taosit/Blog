@@ -5,17 +5,16 @@ import TopBar from "@/components/organisms/topBar/TopBar";
 import React, { Suspense } from "react";
 import styles from "./Profile.module.css";
 import ProtectedRoute from "@/components/atoms/protectedRoute/ProtectedRoute";
-import { getUser, getUserPosts } from "@/lib/dbActions";
+import { getUserPosts } from "@/lib/dbActions";
 
 const Profile = ({ id }: { id: string }) => {
-  const userPromise = getUser(id);
   const blogPromise = getUserPosts(id);
 
   return (
     <div className={styles.container}>
-      <TopBar userPromise={userPromise} />
+      <TopBar userId={id} />
       <div className={styles.row}>
-        <UserCard userPromise={userPromise} />
+        <UserCard userId={id} />
         <Suspense fallback={<LoadingStats />}>
           {/* @ts-expect-error Server Component */}
           <BlogStats postsPromise={blogPromise} />

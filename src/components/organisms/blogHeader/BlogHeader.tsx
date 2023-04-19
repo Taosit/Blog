@@ -2,7 +2,6 @@
 
 import { formatDate, toColorString } from "@/lib/helpers";
 import { HslColorType, userFields } from "@/types/types";
-import { Post, User } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import doubleLeft from "./double-left.svg";
 import Image from "next/image";
@@ -10,18 +9,27 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import styles from "./BlogHeader.module.css";
-import { deleteBlog } from "@/lib/api";
 import UserAvatar from "@/components/atoms/userAvatar/UserAvatar";
+import { trpc } from "@/providers/TrpcProvider";
+import { Post, User } from "@prisma/client";
 
 type HeaderProps = {
   postPromise: Promise<any>;
 };
 
+type PostType = Post & {
+  id: string;
+  author: User;
+  createdAt: string;
+};
+
 export default function BlogHeader({ postPromise }: HeaderProps) {
   const router = useRouter();
-  const [post, setPost] = useState<Partial<any>>({});
+  const [post, setPost] = useState<Partial<PostType>>({});
 
-  const { data, status } = useSession();
+  const { data } = useSession();
+  const deletePostMutation = trpc.posts.deletePost.useMutation();
+
   useEffect(() => {
     if (!postPromise) return;
     postPromise.then((post) => {
@@ -44,8 +52,8 @@ export default function BlogHeader({ postPromise }: HeaderProps) {
   };
 
   const deletePost = async () => {
-    if (!user?.id) return;
-    const deleted = await deleteBlog(post.id);
+    if (!user?.id || !post.id) return;
+    const deleted = await deletePostMutation.mutateAsync(post.id);
     if (deleted) {
       router.push(`/user/${user.id}`);
       router.refresh();
@@ -70,7 +78,9 @@ export default function BlogHeader({ postPromise }: HeaderProps) {
             post.author && (
               <div className={styles.authorContainer}>
                 <UserAvatar user={post.author} size="small" />
-                <p>{post.author.name}</p>
+                <p>
+                  {post.author.firstName} {post.author.lastName}
+                </p>
               </div>
             )
           )}

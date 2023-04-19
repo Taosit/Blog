@@ -1,7 +1,7 @@
 "use client";
 
-import { getImageUrl } from "@/lib/api";
 import { cropImage } from "@/lib/helpers";
+import { trpc } from "@/providers/TrpcProvider";
 import { Editor } from "@tiptap/react";
 import React, { useCallback } from "react";
 import styles from "./Controls.module.css";
@@ -11,6 +11,8 @@ type ImageBlockProps = {
 };
 
 export function ImageBlock({ editor }: ImageBlockProps) {
+  const imageMutation = trpc.image.uploadImage.useMutation();
+
   const addImage = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (!editor) return;
@@ -23,7 +25,7 @@ export function ImageBlock({ editor }: ImageBlockProps) {
         const image = reader.result as string;
         if (!image) return;
         const croppedImage = await cropImage(image);
-        const url = await getImageUrl(croppedImage);
+        const url = await imageMutation.mutateAsync(croppedImage);
         editor.chain().focus().setImage({ src: url }).run();
       };
     },

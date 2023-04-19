@@ -1,5 +1,6 @@
-import { draftPostType, savedPostType } from "@/types/types";
+import { draftPostType, HslColorType, savedPostType } from "@/types/types";
 import { Prisma } from "@prisma/client";
+import { JSONObject } from "superjson/dist/types";
 import { formatClass, getTerm } from "./helpers";
 import client from "./prismadb";
 
@@ -24,7 +25,7 @@ export const getPost = async (id: string) => {
     include: {
       author: {
         select: {
-          name: true,
+          firstName: true,
           image: true,
           color: true,
         },
@@ -41,16 +42,12 @@ export const getPost = async (id: string) => {
   return { ...post, createdAt: post.createdAt.toISOString() };
 };
 
-export const updatePost = async (
-  postId: string,
-  userId: string,
-  post: savedPostType
-) => {
-  const { class: className, ...rest } = post;
+export const updatePost = async (postId: string, post: savedPostType) => {
+  const { class: className, content, ...rest } = post;
   const corespondingClass = await getClassByName(className);
   if (!corespondingClass) throw new Error("Class not found");
   const userIsInClass = corespondingClass.users.some(
-    (user) => user.id === userId
+    (user) => user.id === post.authorId
   );
   if (!userIsInClass) throw new Error("User is not in class");
   const updatedPost = await client.post.update({
@@ -59,20 +56,20 @@ export const updatePost = async (
     },
     data: {
       classId: corespondingClass.id,
+      content: JSON.parse(content),
       ...rest,
     },
   });
   return updatedPost;
 };
 
-export const removePost = async (postId: string, userId: string) => {
+export const removePost = async (postId: string) => {
   const postToDelete = await client.post.findUnique({
     where: {
       id: postId,
     },
   });
   if (!postToDelete) return;
-  if (postToDelete.authorId !== userId) throw new Error("User is not author");
   const deleted = await client.post.delete({
     where: {
       id: postId,
@@ -90,7 +87,13 @@ export const getSavedPost = async (id: string) => {
       class: true,
     },
   });
-  return post;
+  if (!post) return null;
+  return {
+    ...post,
+    coverType: post?.coverType as "COLOR" | "IMAGE",
+    color: post?.color ? (post.color as HslColorType) : undefined,
+    content: post?.content ? (post.content as object) : undefined,
+  };
 };
 
 export const deleteSavedPost = async (id: string) => {
@@ -125,21 +128,29 @@ const getClassByName = async (name: string) => {
 
 export const updateSavedPost = async (id: string, post: draftPostType) => {
   const { class: className, ...rest } = post;
-  const corespondingClass = await getClassByName(className);
-  if (!corespondingClass) throw new Error("Class not found");
-  const userIsInClass = corespondingClass.users.some((user) => user.id === id);
-  if (!userIsInClass) throw new Error("User is not in class");
+  let corespondingClass;
+  if (className) {
+    corespondingClass = await getClassByName(className);
+    if (!corespondingClass) throw new Error("Class not found");
+    const userIsInClass = corespondingClass.users.some(
+      (user) => user.id === id
+    );
+    if (!userIsInClass) throw new Error("User is not in class");
+  }
   const updatedPost = await client.savedPost.upsert({
     where: {
       userId: id,
     },
     create: {
       userId: id,
-      content: rest.content as Prisma.InputJsonValue,
-      classId: corespondingClass.id,
+      content: rest.content as Prisma.JsonObject,
+      ...(corespondingClass && { classId: corespondingClass.id }),
       ...rest,
     },
-    update: { classId: corespondingClass.id, ...rest },
+    update: {
+      ...(corespondingClass && { classId: corespondingClass.id }),
+      ...rest,
+    },
   });
   return updatedPost;
 };
@@ -184,7 +195,11 @@ export const getAllPosts = async ({
             },
             {
               author: {
-                name: {
+                firstName: {
+                  contains: search,
+                  mode: "insensitive",
+                },
+                lastName: {
                   contains: search,
                   mode: "insensitive",
                 },
@@ -210,7 +225,8 @@ export const getAllPosts = async ({
     include: {
       author: {
         select: {
-          name: true,
+          firstName: true,
+          lastName: true,
           image: true,
           color: true,
         },
@@ -224,8 +240,18 @@ export const getAllPosts = async ({
   }));
 };
 
-export const postBlog = async (userId: string, post: savedPostType) => {
-  const { class: className, authorId, ...rest } = post;
+type Post = {
+  title: string;
+  class: string;
+  tags: string[];
+  coverType: "COLOR" | "IMAGE";
+  color?: HslColorType | undefined;
+  image?: string | undefined;
+  content: object;
+};
+
+export const postBlog = async (userId: string, post: Post) => {
+  const { class: className, ...rest } = post;
   const corespondingClass = await getClassByName(className);
   if (!corespondingClass) throw new Error("Class not found");
   const userIsInClass = corespondingClass.users.some(
@@ -244,7 +270,6 @@ export const postBlog = async (userId: string, post: savedPostType) => {
           id: userId,
         },
       },
-      content: rest.content as Prisma.JsonObject,
       ...rest,
     },
   });
@@ -318,7 +343,8 @@ export const updateComment = async (
     },
   });
   if (!comment) throw new Error("Comment not found");
-  if (comment.authorId !== userId) throw new Error("User is not author");
+  if (comment.authorId !== userId)
+    throw new Error("User is not the author of the comment");
   const updatedComment = await client.comment.update({
     where: {
       id: commentId,
@@ -335,18 +361,18 @@ export const updateComment = async (
 
 export const updateBasicUserInfo = async (
   userId: string,
-  name: string,
-  role: "STUDENT" | "TEACHER",
-  studentNumber: string | null,
-  color: { h: number; s: number; l: number } | undefined
+  firstName: string,
+  lastName: string,
+  role?: "STUDENT" | "TEACHER",
+  studentNumber?: string
 ) => {
   return await client.user.update({
     where: { id: userId },
     data: {
-      name,
-      role,
-      studentNumber,
-      color: color as Prisma.JsonObject,
+      firstName,
+      lastName,
+      ...(role && { role }),
+      ...(studentNumber && { studentNumber }),
     },
   });
 };
@@ -383,7 +409,8 @@ export const getUserPosts = async (userId: string) => {
     include: {
       author: {
         select: {
-          name: true,
+          firstName: true,
+          lastName: true,
           image: true,
           color: true,
         },
