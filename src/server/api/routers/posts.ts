@@ -105,7 +105,9 @@ export const postsRouter = createTRPCRouter({
       if (!post) {
         throw new TRPCError({ code: "BAD_REQUEST" });
       }
+      console.time("updatePost");
       const updatedPost = await updatePost(postId, post);
+      console.timeEnd("updatePost");
       return updatedPost;
     }),
 

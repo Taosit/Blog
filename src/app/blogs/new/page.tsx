@@ -57,8 +57,19 @@ const NewBlog = () => {
     if (!session?.user) return;
     if (!editor) return;
     if (savedPost) {
-      const { id, classId, class: classInfo, userId, ...post } = savedPost;
-      setBlog({ ...post, class: classInfo?.name?.toUpperCase() ?? "" });
+      const {
+        id,
+        classId,
+        class: classInfo,
+        userId,
+        tags,
+        ...post
+      } = savedPost;
+      setBlog({
+        ...post,
+        tags: tags.map((tag) => tag.name),
+        class: classInfo?.name?.toUpperCase() ?? "",
+      });
       if (post.content) {
         editor?.commands.setContent(post.content as object);
       }

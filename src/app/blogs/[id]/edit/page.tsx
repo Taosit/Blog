@@ -63,7 +63,10 @@ const EditBlog = ({ params }: { params: { id: string } }) => {
       router.push(`/blogs/${params.id}`);
     }
     setAuthorId(authorId);
-    setBlog({ ...rest, class: classInfo.name.toUpperCase() });
+    setBlog({
+      ...rest,
+      class: classInfo.name.toUpperCase(),
+    });
     if (rest.content) {
       editor?.commands.setContent(rest.content as object);
     }

@@ -22,6 +22,7 @@ export function BlogForm({ blog, setBlog, editor }: BlogFormProps) {
 
   const validateClass = () => {
     const className = blog.class;
+    if (className === undefined) return;
     if (className.length === 0) {
       setClassError("Class cannot be empty");
       return;
@@ -36,6 +37,7 @@ export function BlogForm({ blog, setBlog, editor }: BlogFormProps) {
 
   const validateTitle = () => {
     const title = blog.title;
+    if (title === undefined) return;
     if (title.length === 0) {
       setTitleError("Title cannot be empty");
       return;

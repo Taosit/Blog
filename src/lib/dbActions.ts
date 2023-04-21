@@ -1,11 +1,10 @@
 import { draftPostType, HslColorType, savedPostType } from "@/types/types";
 import { Prisma } from "@prisma/client";
-import { JSONObject } from "superjson/dist/types";
 import { formatClass, getTerm } from "./helpers";
-import client from "./prismadb";
+import prisma from "./prismadb";
 
 export const getUser = async (id: string) => {
-  const user = await client.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: {
       id,
     },
@@ -18,7 +17,7 @@ export const getUser = async (id: string) => {
 };
 
 export const getPost = async (id: string) => {
-  const post = await client.post.findUnique({
+  const post = await prisma.post.findUnique({
     where: {
       id,
     },
@@ -36,41 +35,53 @@ export const getPost = async (id: string) => {
           name: true,
         },
       },
+      tags: true,
     },
   });
   if (!post) throw new Error("Post not found");
-  return { ...post, createdAt: post.createdAt.toISOString() };
+  return {
+    ...post,
+    tags: post.tags.map((tag) => tag.name),
+    createdAt: post.createdAt.toISOString(),
+  };
 };
 
 export const updatePost = async (postId: string, post: savedPostType) => {
-  const { class: className, content, ...rest } = post;
+  const { class: className, content, tags, ...rest } = post;
   const corespondingClass = await getClassByName(className);
   if (!corespondingClass) throw new Error("Class not found");
   const userIsInClass = corespondingClass.users.some(
     (user) => user.id === post.authorId
   );
   if (!userIsInClass) throw new Error("User is not in class");
-  const updatedPost = await client.post.update({
+  const updatedPost = await prisma.post.update({
     where: {
       id: postId,
     },
     data: {
       classId: corespondingClass.id,
       content: JSON.parse(content),
+      tags: {
+        set: [],
+        create: tags.map((tag) => ({ name: tag })),
+      },
       ...rest,
+    },
+    include: {
+      tags: true,
     },
   });
   return updatedPost;
 };
 
 export const removePost = async (postId: string) => {
-  const postToDelete = await client.post.findUnique({
+  const postToDelete = await prisma.post.findUnique({
     where: {
       id: postId,
     },
   });
   if (!postToDelete) return;
-  const deleted = await client.post.delete({
+  const deleted = await prisma.post.delete({
     where: {
       id: postId,
     },
@@ -79,12 +90,13 @@ export const removePost = async (postId: string) => {
 };
 
 export const getSavedPost = async (id: string) => {
-  const post = await client.savedPost.findUnique({
+  const post = await prisma.savedPost.findUnique({
     where: {
       userId: id,
     },
     include: {
       class: true,
+      tags: true,
     },
   });
   if (!post) return null;
@@ -97,13 +109,13 @@ export const getSavedPost = async (id: string) => {
 };
 
 export const deleteSavedPost = async (id: string) => {
-  const postToDelete = await client.savedPost.findUnique({
+  const postToDelete = await prisma.savedPost.findUnique({
     where: {
       userId: id,
     },
   });
   if (!postToDelete) return;
-  await client.savedPost.delete({
+  await prisma.savedPost.delete({
     where: {
       userId: id,
     },
@@ -111,7 +123,7 @@ export const deleteSavedPost = async (id: string) => {
 };
 
 const getClassByName = async (name: string) => {
-  return await client.class.findUnique({
+  return await prisma.class.findUnique({
     where: {
       courseIdentifier: {
         name: name.toLowerCase(),
@@ -127,7 +139,8 @@ const getClassByName = async (name: string) => {
 };
 
 export const updateSavedPost = async (id: string, post: draftPostType) => {
-  const { class: className, ...rest } = post;
+  console.log("updateSavedPost");
+  const { class: className, tags, ...rest } = post;
   let corespondingClass;
   if (className) {
     corespondingClass = await getClassByName(className);
@@ -137,21 +150,32 @@ export const updateSavedPost = async (id: string, post: draftPostType) => {
     );
     if (!userIsInClass) throw new Error("User is not in class");
   }
-  const updatedPost = await client.savedPost.upsert({
+  const updatedPost = await prisma.savedPost.upsert({
     where: {
       userId: id,
     },
     create: {
       userId: id,
       content: rest.content as Prisma.JsonObject,
+      tags: {
+        create: tags.map((tag) => ({ name: tag })),
+      },
       ...(corespondingClass && { classId: corespondingClass.id }),
       ...rest,
     },
     update: {
       ...(corespondingClass && { classId: corespondingClass.id }),
+      tags: {
+        set: [],
+        create: tags.map((tag) => ({ name: tag })),
+      },
       ...rest,
     },
+    include: {
+      tags: true,
+    },
   });
+  console.log(updatedPost.tags);
   return updatedPost;
 };
 
@@ -181,7 +205,7 @@ export const getAllPosts = async ({
       _count: "desc",
     };
   }
-  const posts = await client.post.findMany({
+  const posts = await prisma.post.findMany({
     where: {
       AND: [
         {
@@ -190,18 +214,15 @@ export const getAllPosts = async ({
             {
               title: {
                 contains: search,
-                mode: "insensitive",
               },
             },
             {
               author: {
                 firstName: {
                   contains: search,
-                  mode: "insensitive",
                 },
                 lastName: {
                   contains: search,
-                  mode: "insensitive",
                 },
               },
             },
@@ -211,11 +232,9 @@ export const getAllPosts = async ({
           class: {
             name: {
               contains: course,
-              mode: "insensitive",
             },
             term: {
               contains: term,
-              mode: "insensitive",
             },
           },
         },
@@ -231,11 +250,13 @@ export const getAllPosts = async ({
           color: true,
         },
       },
+      tags: true,
     },
   });
 
   return posts.map((post) => ({
     ...post,
+    tags: post.tags.map((tag) => tag.name),
     createdAt: post.createdAt.toISOString(),
   }));
 };
@@ -251,19 +272,24 @@ type Post = {
 };
 
 export const postBlog = async (userId: string, post: Post) => {
-  const { class: className, ...rest } = post;
+  const { class: className, tags, ...rest } = post;
   const corespondingClass = await getClassByName(className);
   if (!corespondingClass) throw new Error("Class not found");
   const userIsInClass = corespondingClass.users.some(
     (user) => user.id === userId
   );
   if (!userIsInClass) throw new Error("User is not in class");
-  const newPost = await client.post.create({
+  const newPost = await prisma.post.create({
     data: {
       class: {
         connect: {
           id: corespondingClass.id,
         },
+      },
+      tags: {
+        create: tags.map((tag) => ({
+          name: tag,
+        })),
       },
       author: {
         connect: {
@@ -277,7 +303,7 @@ export const postBlog = async (userId: string, post: Post) => {
 };
 
 export const getCommentsForPost = async (postId: string) => {
-  const comments = await client.comment.findMany({
+  const comments = await prisma.comment.findMany({
     where: {
       postId,
     },
@@ -296,7 +322,7 @@ export const postComment = async (
   postId: string,
   content: object
 ) => {
-  const comment = await client.comment.create({
+  const comment = await prisma.comment.create({
     data: {
       content: content as Prisma.JsonObject,
       author: {
@@ -318,14 +344,14 @@ export const postComment = async (
 };
 
 export const removeComment = async (commentId: string, userId: string) => {
-  const comment = await client.comment.findUnique({
+  const comment = await prisma.comment.findUnique({
     where: {
       id: commentId,
     },
   });
   if (!comment) throw new Error("Comment not found");
   if (comment.authorId !== userId) throw new Error("User is not author");
-  await client.comment.delete({
+  await prisma.comment.delete({
     where: {
       id: commentId,
     },
@@ -337,7 +363,7 @@ export const updateComment = async (
   userId: string,
   content: object
 ) => {
-  const comment = await client.comment.findUnique({
+  const comment = await prisma.comment.findUnique({
     where: {
       id: commentId,
     },
@@ -345,7 +371,7 @@ export const updateComment = async (
   if (!comment) throw new Error("Comment not found");
   if (comment.authorId !== userId)
     throw new Error("User is not the author of the comment");
-  const updatedComment = await client.comment.update({
+  const updatedComment = await prisma.comment.update({
     where: {
       id: commentId,
     },
@@ -366,7 +392,7 @@ export const updateBasicUserInfo = async (
   role?: "STUDENT" | "TEACHER",
   studentNumber?: string
 ) => {
-  return await client.user.update({
+  return await prisma.user.update({
     where: { id: userId },
     data: {
       firstName,
@@ -381,7 +407,7 @@ export const updateUserColor = async (
   userId: string,
   color: { h: number; s: number; l: number } | undefined
 ) => {
-  return await client.user.update({
+  return await prisma.user.update({
     where: { id: userId },
     data: {
       color,
@@ -390,7 +416,7 @@ export const updateUserColor = async (
 };
 
 export const getUserClasses = async (userId: string) => {
-  const user = await client.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: {
       id: userId,
     },
@@ -402,7 +428,7 @@ export const getUserClasses = async (userId: string) => {
 };
 
 export const getUserPosts = async (userId: string) => {
-  const posts = await client.post.findMany({
+  const posts = await prisma.post.findMany({
     where: {
       authorId: userId,
     },
@@ -415,17 +441,19 @@ export const getUserPosts = async (userId: string) => {
           color: true,
         },
       },
+      tags: true,
     },
   });
 
   return posts.map((post) => ({
     ...post,
+    tags: post.tags.map((tag) => tag.name),
     createdAt: post.createdAt.toISOString(),
   }));
 };
 
 export const updateAvatar = async (userId: string, avatar: string) => {
-  await client.user.update({
+  await prisma.user.update({
     where: { id: userId },
     data: {
       image: avatar,
@@ -441,7 +469,7 @@ export const updateStudentCourses = async (
   const newCourseNames = newCourses.map((course) => formatClass(course));
   const newCourseIds = await Promise.all(
     newCourseNames.map(async (courseName) => {
-      const upsertedCourse = await client.class.upsert({
+      const upsertedCourse = await prisma.class.upsert({
         where: {
           courseIdentifier: {
             name: courseName,
@@ -462,7 +490,7 @@ export const updateStudentCourses = async (
     })
   );
 
-  return await client.user.update({
+  return await prisma.user.update({
     where: { id: userId },
     data: {
       classes: { set: [], connect: newCourseIds },
@@ -471,7 +499,7 @@ export const updateStudentCourses = async (
 };
 
 export const getCoursesAndSemesters = async () => {
-  const classes = await client.class.findMany({
+  const classes = await prisma.class.findMany({
     select: {
       name: true,
       term: true,
@@ -489,11 +517,11 @@ type classFilter = {
 
 export const getClasses = async (filter: classFilter) => {
   if (!filter || (!filter.course && !filter.semester)) {
-    const classes = await client.class.findMany();
+    const classes = await prisma.class.findMany();
     return classes;
   }
   const { course, semester } = filter;
-  const classes = await client.class.findMany({
+  const classes = await prisma.class.findMany({
     where: {
       ...(course && { name: course }),
       ...(semester && { term: semester }),

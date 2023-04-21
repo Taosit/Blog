@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model Account {
@@ -27,6 +28,7 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
@@ -35,6 +37,8 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model VerificationToken {
@@ -94,11 +98,14 @@ model Post {
   image     String?
   class     Class     @relation(fields: [classId], references: [id])
   classId   String
-  tags      String[]
+  tags      Tag[]
   content   Json
   author    User      @relation(fields: [authorId], references: [id])
   authorId  String
   comments  Comment[]
+
+  @@index([classId])
+  @@index([authorId])
 }
 
 model SavedPost {
@@ -111,8 +118,17 @@ model SavedPost {
   image     String?
   class     Class?    @relation(fields: [classId], references: [id])
   classId   String?
-  tags      String[]
+  tags      Tag[]
   content   Json
+
+  @@index([classId])
+}
+
+model Tag {
+  id         String      @id @default(cuid())
+  name       String      @unique
+  posts      Post[]
+  savedPosts SavedPost[]
 }
 
 model Comment {
@@ -123,4 +139,7 @@ model Comment {
   authorId  String
   post      Post     @relation(fields: [postId], references: [id])
   postId    String
+
+  @@index([authorId])
+  @@index([postId])
 }

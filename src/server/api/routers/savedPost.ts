@@ -30,7 +30,7 @@ export const savedPostRouter = createTRPCRouter({
           .object({
             title: z.string().optional(),
             class: z.string().optional(),
-            tags: z.array(z.string()).optional(),
+            tags: z.array(z.string()),
             coverType: z.enum(["COLOR", "IMAGE"]),
             color: z
               .object({
@@ -63,6 +63,6 @@ export const savedPostRouter = createTRPCRouter({
         ...post,
         content,
       });
-      return { savedPost };
+      return savedPost;
     }),
 });
