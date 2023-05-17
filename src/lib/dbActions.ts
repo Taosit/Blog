@@ -1,7 +1,8 @@
-import { draftPostType, HslColorType, savedPostType } from "@/types/types";
+import { draftPostType, HslColorType, savedPostType } from "@/types/main";
 import { Prisma } from "@prisma/client";
 import { formatClass, getTerm } from "./helpers";
 import prisma from "./prismadb";
+import { JSONContent } from "@tiptap/react";
 
 export const getUser = async (id: string) => {
   const user = await prisma.user.findUnique({
@@ -43,6 +44,9 @@ export const getPost = async (id: string) => {
     ...post,
     tags: post.tags.map((tag) => tag.name),
     createdAt: post.createdAt.toISOString(),
+    color: post.color ? (post.color as HslColorType) : undefined,
+    image: post.image ? post.image : undefined,
+    content: post.content ? (post.content as object) : undefined,
   };
 };
 
@@ -105,6 +109,8 @@ export const getSavedPost = async (id: string) => {
     coverType: post?.coverType as "COLOR" | "IMAGE",
     color: post?.color ? (post.color as HslColorType) : undefined,
     content: post?.content ? (post.content as object) : undefined,
+    title: post?.title ? post.title : undefined,
+    image: post?.image ? post.image : undefined,
   };
 };
 
@@ -313,6 +319,7 @@ export const getCommentsForPost = async (postId: string) => {
   });
   return comments.map((comment) => ({
     ...comment,
+    content: comment.content as JSONContent,
     createdAt: comment.createdAt.toISOString(),
   }));
 };
@@ -340,7 +347,7 @@ export const postComment = async (
       author: true,
     },
   });
-  return comment;
+  return { ...comment, content: comment.content as JSONContent };
 };
 
 export const removeComment = async (commentId: string, userId: string) => {
@@ -382,7 +389,7 @@ export const updateComment = async (
       author: true,
     },
   });
-  return updatedComment;
+  return { ...updatedComment, content: updatedComment.content as JSONContent };
 };
 
 export const updateBasicUserInfo = async (

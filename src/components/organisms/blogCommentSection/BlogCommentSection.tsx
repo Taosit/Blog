@@ -1,12 +1,13 @@
 "use client";
 
 import { trpc } from "@/providers/TrpcProvider";
-import { Prisma, User } from "@prisma/client";
+import { User } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import CommentBox from "../commentBox/CommentBox";
 import Comments from "../comments/Comments";
 import styles from "./BlogCommentSection.module.css";
+import { JSONContent } from "@tiptap/react";
 
 type CommentSectionProps = {
   postId: string;
@@ -15,7 +16,7 @@ type CommentSectionProps = {
 type CommentType = {
   id: string;
   createdAt: string;
-  content: Prisma.JsonValue;
+  content: JSONContent;
   authorId: string;
   postId: string;
   author: User;

@@ -5,7 +5,14 @@ import styles from "./Filters.module.css";
 import { Dropdown } from "@/components/atoms/dropdown/Dropdown";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export const Filters = ({ getFilters }: { getFilters: Promise<any> }) => {
+export const Filters = ({
+  getFilters,
+}: {
+  getFilters: Promise<{
+    courses: string[];
+    semesters: string[];
+  }>;
+}) => {
   const sortItems = ["Popular", "New"];
   const router = useRouter();
   const searchParams = useSearchParams();

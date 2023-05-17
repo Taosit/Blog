@@ -6,7 +6,7 @@ import Image from "next/image";
 import styles from "./Account.module.css";
 import chevronRight from "./chevron-right.svg";
 import { useRouter, useSearchParams } from "next/navigation";
-import { accountFields, userFields } from "@/types/types";
+import { accountFields, UserFields } from "@/types/main";
 import { StudentAccountFields } from "@/components/organisms/studentAccountFields/StudentAccountFields";
 import { ProfessorAccountFields } from "@/components/organisms/professorAccountFields/ProfessorAccountFields";
 import { useSession } from "next-auth/react";
@@ -63,7 +63,7 @@ const Account = () => {
       return;
     }
     if (isFormInvalid(data)) return;
-    const user = session.data.user as userFields;
+    const user = session.data.user as UserFields;
     userMutation.mutate(
       { userId: user.id, ...formatAccountFormData(data) },
       {

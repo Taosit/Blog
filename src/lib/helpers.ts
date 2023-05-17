@@ -1,4 +1,4 @@
-import { accountFields, HslColorType, userUpdateFields } from "@/types/types";
+import { accountFields, HslColorType, userUpdateFields } from "@/types/main";
 
 export const getEmailError = (str: string) => {
   const regex =
@@ -123,7 +123,7 @@ export const darkenColor = (color: HslColorType) => {
   return { ...color, l: Math.max(20, color.l - 50) };
 };
 
-export const formatDate = (date: string) => {
+export const formatDate = (date: Date | string) => {
   const dateObj = new Date(date);
   const dateFormatter = new Intl.DateTimeFormat("en-US");
   return dateFormatter.format(dateObj);
@@ -222,7 +222,7 @@ const DIVISIONS = [
   { amount: 4.34524, name: "weeks" },
   { amount: 12, name: "months" },
   { amount: Number.POSITIVE_INFINITY, name: "years" },
-];
+] as const;
 
 export function formatTimeAgo(date: Date) {
   let duration = (date.getTime() - new Date().getTime()) / 1000;

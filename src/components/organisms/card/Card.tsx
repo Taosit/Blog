@@ -3,7 +3,7 @@ import { DefaultAvatar } from "@/components/atoms/defaultAvatar/DefaultAvatar";
 import Image from "next/image";
 import styles from "./Card.module.css";
 import { darkenColor, formatDate, toColorString } from "@/lib/helpers";
-import { HslColorType } from "@/types/types";
+import { HslColorType } from "@/types/main";
 import Link from "next/link";
 
 type CardProps = {

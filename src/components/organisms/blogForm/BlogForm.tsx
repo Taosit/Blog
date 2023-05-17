@@ -1,6 +1,6 @@
 import TagsInputGroup from "@/components/atoms/tagsInputGroup/TagsInputGroup";
 import { formatClass, isCourseValid } from "@/lib/helpers";
-import { draftPostType } from "@/types/types";
+import { draftPostType } from "@/types/main";
 import { Editor } from "@tiptap/react";
 import React, { useState } from "react";
 import BlogCover from "../blogCover/BlogCover";

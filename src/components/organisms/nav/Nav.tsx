@@ -5,12 +5,14 @@ import Link from "next/link";
 import styles from "./Nav.module.css";
 import UserAvatar from "@/components/atoms/userAvatar/UserAvatar";
 import { trpc } from "@/providers/TrpcProvider";
+import { UserFields } from "@/types/main";
 
 export const Nav = () => {
   const session = useSession();
+  const userId = (session?.data?.user as UserFields)?.id;
   const { data: user, isLoading } = trpc.user.getUser.useQuery(
     {
-      userId: session.data?.user?.id,
+      userId,
     },
     { enabled: !!session.data }
   );

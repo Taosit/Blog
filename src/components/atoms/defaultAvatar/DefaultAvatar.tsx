@@ -1,5 +1,5 @@
 import { darkenColor, toColorString } from "@/lib/helpers";
-import { HslColorType } from "@/types/types";
+import { HslColorType } from "@/types/main";
 import React from "react";
 
 type DefaultAvatarProps = {

@@ -3,7 +3,7 @@
 import ColorPicker from "@/components/atoms/colorPicker/ColorPicker";
 import { Radio } from "@/components/atoms/radio/Radio";
 import { cropImageRectangle, toColorString } from "@/lib/helpers";
-import { draftPostType } from "@/types/types";
+import { draftPostType } from "@/types/main";
 import React, { useCallback, useRef } from "react";
 import styles from "./BlogCover.module.css";
 

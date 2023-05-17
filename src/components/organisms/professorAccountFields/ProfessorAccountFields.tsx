@@ -9,7 +9,7 @@ import {
   getNameError,
   isCourseValid,
 } from "@/lib/helpers";
-import { accountFields } from "@/types/types";
+import { accountFields } from "@/types/main";
 import React, { useRef } from "react";
 import styles from "./ProfessorAccountFields.module.css";
 

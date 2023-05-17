@@ -1,9 +1,10 @@
 import styles from "./BlogStats.module.css";
 import { getTerm } from "@/lib/helpers";
+import { Post } from "@prisma/client";
 import Link from "next/link";
 
 type BlogStatsType = {
-  postsPromise: Promise<any[]>;
+  postsPromise: Promise<Post[]>;
 };
 
 export default async function BlogStats({ postsPromise }: BlogStatsType) {

@@ -2,7 +2,7 @@
 
 import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 import { toColorString } from "@/lib/helpers";
-import { HslColorType } from "@/types/types";
+import { HslColorType } from "@/types/main";
 import React, { useCallback, useRef, useState } from "react";
 import { HslColorPicker } from "react-colorful";
 import styles from "./ColorPicker.module.css";
@@ -10,7 +10,7 @@ import styles from "./ColorPicker.module.css";
 type ColorPickerProps = {
   color: HslColorType;
   onChange: (newColor: HslColorType) => void;
-  onSetColor?: () => any;
+  onSetColor?: () => void;
   className?: string;
 };
 

@@ -9,7 +9,7 @@ import {
   getStudentNumberError,
   isCourseValid,
 } from "@/lib/helpers";
-import { accountFields } from "@/types/types";
+import { accountFields } from "@/types/main";
 import React from "react";
 
 type StudentProps = {

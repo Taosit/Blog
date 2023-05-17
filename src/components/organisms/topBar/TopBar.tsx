@@ -6,7 +6,7 @@ import styles from "./TopBar.module.css";
 import { DefaultAvatar } from "@/components/atoms/defaultAvatar/DefaultAvatar";
 import Link from "next/link";
 import doubleLeft from "./double-left.svg";
-import { HslColorType } from "@/types/types";
+import { HslColorType } from "@/types/main";
 import { cropImageSquare, toColorString } from "@/lib/helpers";
 import ColorPicker from "@/components/atoms/colorPicker/ColorPicker";
 import { useRouter } from "next/navigation";

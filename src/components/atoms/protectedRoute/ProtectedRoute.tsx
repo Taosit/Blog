@@ -1,5 +1,5 @@
 "use client";
-import { userFields } from "@/types/types";
+import { UserFields } from "@/types/main";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import React, { PropsWithChildren, useEffect, useState } from "react";
@@ -17,8 +17,12 @@ export default function ProtectedRoute({ children }: PropsWithChildren<{}>) {
       return;
     }
     const id = pathname?.match(/^\/user\/([a-zA-Z0-9]+)$/)?.[1];
-    const user = session.data?.user as userFields;
-    if (pathname && ((id && user.id !== id) || (pathname === "/account" && user.studentNumber))) {
+    const user = session.data?.user as UserFields;
+    if (
+      pathname &&
+      ((id && user.id !== id) ||
+        (pathname === "/account" && user.studentNumber))
+    ) {
       router.push(`/user/${user.id}`);
       return;
     }

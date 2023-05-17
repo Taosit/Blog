@@ -8,8 +8,8 @@ import {
   coverType,
   draftPostType,
   savedPostType,
-  userFields,
-} from "@/types/types";
+  UserFields,
+} from "@/types/main";
 import { useEditor } from "@tiptap/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -39,7 +39,7 @@ const EditBlog = ({ params }: { params: { id: string } }) => {
   const { data: post } = trpc.posts.getPost.useQuery(params.id);
   const updatePostMutation = trpc.posts.updatePost.useMutation();
 
-  const user = session?.user as userFields;
+  const user = session?.user as UserFields;
 
   const editor = useEditor({
     extensions: editorExtensions,
@@ -63,10 +63,11 @@ const EditBlog = ({ params }: { params: { id: string } }) => {
       router.push(`/blogs/${params.id}`);
     }
     setAuthorId(authorId);
-    setBlog({
+    const retrivedBlog = {
       ...rest,
       class: classInfo.name.toUpperCase(),
-    });
+    };
+    setBlog(retrivedBlog);
     if (rest.content) {
       editor?.commands.setContent(rest.content as object);
     }

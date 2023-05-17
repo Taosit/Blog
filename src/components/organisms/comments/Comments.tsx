@@ -10,17 +10,17 @@ import doneIcon from "./done.svg";
 import { useEffect, useState } from "react";
 import { editorExtensions } from "@/lib/editorConfig";
 import CommentEditor from "../commentEditor/CommentEditor";
-import { useEditor } from "@tiptap/react";
+import { JSONContent, useEditor } from "@tiptap/react";
 import UserAvatar from "@/components/atoms/userAvatar/UserAvatar";
 import IconButton from "@/components/atoms/iconButton/IconButton";
 import editorStyles from "@/styles/editor.module.css";
 import { useSession } from "next-auth/react";
-import { userFields } from "@/types/types";
+import { UserFields } from "@/types/main";
 
 type CommentType = {
   id: string;
   createdAt: string;
-  content: Prisma.JsonValue;
+  content: JSONContent;
   authorId: string;
   postId: string;
   author: User;
@@ -43,7 +43,10 @@ export default function Comments({
   const { data: session } = useSession();
 
   const commentsWithHTML = comments.map((comment) => {
-    const content = generateHTML(comment.content as any, editorExtensions);
+    const content = generateHTML(
+      comment.content as JSONContent,
+      editorExtensions
+    );
     return {
       ...comment,
       content,
@@ -60,8 +63,8 @@ export default function Comments({
   });
 
   useEffect(() => {
-    if (!editor) return;
-    editor.commands.setContent(commentContent as any);
+    if (!editor || !commentContent) return;
+    editor.commands.setContent(commentContent);
   }, [commentContent]);
 
   const handleStartEdit = (id: string) => {
@@ -79,7 +82,7 @@ export default function Comments({
     <div className={styles.container}>
       {commentsWithHTML.map((comment) => {
         const author = comment.author;
-        const user = session?.user as userFields;
+        const user = session?.user as UserFields;
         const isUserAuthor = user?.id === author.id;
         return (
           <div key={comment.id} className={styles.comment}>

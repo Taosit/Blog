@@ -3,7 +3,7 @@ import Image from "next/image";
 import styles from "./UserAvatar.module.css";
 import { DefaultAvatar } from "../defaultAvatar/DefaultAvatar";
 import { darkenColor } from "@/lib/helpers";
-import { HslColorType } from "@/types/types";
+import { HslColorType } from "@/types/main";
 import { Prisma } from "@prisma/client";
 
 type UserAvatarProps = {

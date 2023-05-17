@@ -6,8 +6,8 @@ import {
   coverType,
   draftPostType,
   savedPostType,
-  userFields,
-} from "@/types/types";
+  UserFields,
+} from "@/types/main";
 import { Class } from "@prisma/client";
 import { useEditor } from "@tiptap/react";
 import { useSession } from "next-auth/react";
@@ -36,7 +36,7 @@ const NewBlog = () => {
     },
   });
 
-  const userId = (session?.user as userFields)?.id;
+  const userId = (session?.user as UserFields)?.id;
   const { data: user } = trpc.user.getUser.useQuery(
     {
       userId: userId,
@@ -65,11 +65,12 @@ const NewBlog = () => {
         tags,
         ...post
       } = savedPost;
-      setBlog({
+      const retrivedBlog = {
         ...post,
         tags: tags.map((tag) => tag.name),
         class: classInfo?.name?.toUpperCase() ?? "",
-      });
+      };
+      setBlog(retrivedBlog);
       if (post.content) {
         editor?.commands.setContent(post.content as object);
       }

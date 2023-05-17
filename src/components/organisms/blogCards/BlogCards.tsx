@@ -1,4 +1,4 @@
-import { HslColorType } from "@/types/types";
+import { HslColorType } from "@/types/main";
 import React, { Suspense } from "react";
 import { Card } from "../card/Card";
 import { CardLoader } from "../cardLoader/CardLoader";

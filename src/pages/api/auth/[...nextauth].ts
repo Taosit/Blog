@@ -3,6 +3,7 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
 import prisma from "../../../lib/prismadb";
+import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
@@ -24,7 +25,7 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    async session(params: any) {
+    async session(params: Params) {
       if (params.session && params.user) {
         return { ...params.session, user: params.user };
       }
